@@ -10,35 +10,43 @@
     <div class="container">
         <h1>Roleplay Calculator</h1>
         <form id="calculator-form">
-            <label for="total"><strong>Total Stat:</strong></label>
+            <label for="total"><strong>Base Stat:</strong></label>
             <input type="number" id="total" name="total" required min="0">
 
-            <div id="stat-inputs" style="display: none;">
-    <label for="hp"><strong>HP: </strong></label>
-    <input type="number" id="hp" name="hp" required min="0" placeholder="">
-    <span id="hp-error" class="error-message"></span>
-
-    <label for="power"><strong>Power:</strong></label>
-    <input type="number" id="power" name="power" min="0">
-    <span id="power-error" class="error-message"></span>
-
-    <label for="speed"><strong>Speed:</strong></label>
-    <input type="number" id="speed" name="speed" min="0" placeholder="">
-    <span id="speed-error" class="error-message"></span>
-
-    <label for="shielding"><strong>Shielding (SHD):</strong></label>
-    <input type="number" id="shielding" name="shielding" min="0">
-    <span id="shielding-error" class="error-message"></span>
-
-    <label for="recovery"><strong>Recovery (REC):</strong></label>
-    <input type="number" id="recovery" name="recovery" min="0">
-    <span id="recovery-error" class="error-message"></span>
-
-    <span id="total-error" class="error-message"></span>
+<div id="stat-summary">
+    <div class="stat-item left-align">
+        <span><strong>Base Stat:</strong></span>
+        <span id="base-total"></span>
+    </div>
+    <div class="stat-item right-align">
+        <span><strong>Remaining:</strong></span>
+        <span id="remaining-total"></span>
+    </div>
 </div>
-			<div id="remaining-stat">
-				<p><strong>Remaining stat:</strong> <span id="remaining-total"></span></p>
-			</div>
+
+            <div id="stat-inputs" style="display: none;">
+                <label for="hp"><strong>HP: </strong></label>
+                <input type="number" id="hp" name="hp" required min="0" placeholder="">
+                <span id="hp-error" class="error-message"></span>
+
+                <label for="power"><strong>Power:</strong></label>
+                <input type="number" id="power" name="power" min="0">
+                <span id="power-error" class="error-message"></span>
+
+                <label for="speed"><strong>Speed:</strong></label>
+                <input type="number" id="speed" name="speed" min="0" placeholder="">
+                <span id="speed-error" class="error-message"></span>
+
+                <label for="shielding"><strong>Shielding (SHD):</strong></label>
+                <input type="number" id="shielding" name="shielding" min="0">
+                <span id="shielding-error" class="error-message"></span>
+
+                <label for="recovery"><strong>Recovery (REC):</strong></label>
+                <input type="number" id="recovery" name="recovery" min="0">
+                <span id="recovery-error" class="error-message"></span>
+
+                <span id="total-error" class="error-message"></span>
+            </div>
         </form>
 
         <div id="input-values">
@@ -49,8 +57,8 @@
             <p><strong>Shd:</strong> <span id="input-shielding"></span></p>
             <p><strong>Rec:</strong> <span id="input-recovery"></span></p>
         </div>
-		<button id="copy-values">Copy</button>
-		<div id="success-message"></div>
+        <button id="copy-values">Copy</button>
+        <div id="success-message"></div>
 
         <div id="result"></div>
     </div>
