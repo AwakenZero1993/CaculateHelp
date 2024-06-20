@@ -8,33 +8,33 @@
 </head>
 <body>
     <div class="container">
-        <h1>Profile Assist Tool</h1>
+        <h1>Roleplay Calculator</h1>
         <form id="calculator-form">
             <label for="total"><strong>Base Stat:</strong></label>
             <input type="number" id="total" name="total" required min="0">
-            
-            <label for="hp"><strong>HP:</strong></label>
-            <input type="number" id="hp" name="hp" required min="0">
-            <span id="hp-error" class="error-message"></span>
 
-            <label for="power"><strong>Power:</strong></label>
-            <input type="number" id="power" name="power" min="0">
+            <div id="stat-inputs" style="display: none;">
+                <label for="hp"><strong>HP: </strong></label>
+                <input type="number" id="hp" name="hp" required min="0" placeholder="">
 
-            <label for="speed"><strong>Speed:</strong></label>
-            <input type="number" id="speed" name="speed" min="0">
-            <span id="speed-error" class="error-message"></span>
+                <label for="power"><strong>Power:</strong></label>
+                <input type="number" id="power" name="power" min="0">
 
-            <label for="shielding"><strong>Shielding (SHD):</strong></label>
-            <input type="number" id="shielding" name="shielding" min="0">
+                <label for="speed"><strong>Speed:</strong></label>
+                <input type="number" id="speed" name="speed" min="0" placeholder="">
 
-            <label for="recovery"><strong>Recovery (REC):</strong></label>
-            <input type="number" id="recovery" name="recovery" min="0">
+                <label for="shielding"><strong>Shielding (SHD):</strong></label>
+                <input type="number" id="shielding" name="shielding" min="0">
 
-            <span id="total-error" class="error-message"></span>
-            
-            <button type="submit">Kiểm tra tính hợp lệ</button>
+                <label for="recovery"><strong>Recovery (REC):</strong></label>
+                <input type="number" id="recovery" name="recovery" min="0">
+
+                <span id="total-error" class="error-message"></span>
+
+                <button type="submit">Kiểm tra tính hợp lệ</button>
+            </div>
         </form>
-        
+
         <div id="input-values">
             <p><strong>Base stat:</strong> <span id="input-total"></span></p>
             <p><strong>HP:</strong> <span id="input-hp"></span></p>
