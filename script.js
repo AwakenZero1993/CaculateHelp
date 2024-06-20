@@ -19,20 +19,16 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
     // HP condition: at least 20% of total
     if (hp < total * 0.2) {
         const requiredHp = total * 0.2;
-        document.getElementById('hp-error').innerText = `HP phải ít nhất ${requiredHp}/${total}`;
+        document.getElementById('hp-error').innerText = `HP phải thấp nhất là: ${requiredHp}`;
         document.getElementById('hp-error').style.display = 'block';
         isValid = false;
     }
 
-    // Speed condition: at least 5% of total
-    if (speed < total * 0.05) {
-        const requiredSpeed = total * 0.05;
-        document.getElementById('speed-error').innerText = `Speed ít nhất ${requiredSpeed}/${total}`;
-        document.getElementById('speed-error').style.display = 'block';
-        isValid = false;
-    } else if (speed > total * 0.6) {
-        const maxSpeed = total * 0.6;
-        document.getElementById('speed-error').innerText = `Speed cao hơn mức tối đa (${speed}/${maxSpeed})`;
+    // Speed condition: at least 5% and no more than 60% of total
+    const minSpeed = total * 0.05;
+    const maxSpeed = total * 0.6;
+    if (speed < minSpeed || speed > maxSpeed) {
+        document.getElementById('speed-error').innerText = `Speed phải nằm trong khoảng ${minSpeed} - ${maxSpeed}`;
         document.getElementById('speed-error').style.display = 'block';
         isValid = false;
     }
