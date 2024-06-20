@@ -14,6 +14,7 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
     document.getElementById('hp-error').style.display = 'none';
     document.getElementById('speed-error').style.display = 'none';
     document.getElementById('total-error').style.display = 'none';
+    document.getElementById('result').innerText = '';
 
     // HP condition: at least 20% of total
     if (hp < total * 0.2) {
@@ -41,7 +42,6 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
     }
 
     if (isValid) {
-        const result = (hp + power + speed + shielding + recovery) / 5;  // Example calculation: average of all stats
-        document.getElementById('result').innerText = "Kết quả: " + result.toFixed(2);
+        document.getElementById('result').innerText = "Dữ liệu hợp lệ. Tiếp tục xử lý...";
     }
 });
