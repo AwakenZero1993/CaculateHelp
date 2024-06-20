@@ -4,7 +4,7 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
     const total = parseFloat(document.getElementById('total').value);
     const hp = parseFloat(document.getElementById('hp').value);
     const power = parseFloat(document.getElementById('power').value) || 0; // Default to 0 if empty
-    const speed = parseFloat(document.getElementById('speed').value);
+    const speed = parseFloat(document.getElementById('speed').value) || 0; // Default to 0 if empty
     const shielding = parseFloat(document.getElementById('shielding').value) || 0; // Default to 0 if empty
     const recovery = parseFloat(document.getElementById('recovery').value) || 0; // Default to 0 if empty
 
@@ -23,9 +23,9 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
         isValid = false;
     }
 
-    // Speed condition: no more than 60% of total
-    if (speed > total * 0.6) {
-        document.getElementById('speed-error').innerText = "Speed không được cao hơn 60% tổng chỉ số.";
+    // Speed condition: at least 5% of total
+    if (speed < total * 0.05) {
+        document.getElementById('speed-error').innerText = "Speed ít nhất là 5% tổng chỉ số.";
         document.getElementById('speed-error').style.display = 'block';
         isValid = false;
     }
