@@ -18,14 +18,21 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
 
     // HP condition: at least 20% of total
     if (hp < total * 0.2) {
-        document.getElementById('hp-error').innerText = "HP phải ít nhất 20% tổng chỉ số.";
+        const requiredHp = total * 0.2;
+        document.getElementById('hp-error').innerText = `HP phải ít nhất ${requiredHp}/${total}`;
         document.getElementById('hp-error').style.display = 'block';
         isValid = false;
     }
 
     // Speed condition: at least 5% of total
     if (speed < total * 0.05) {
-        document.getElementById('speed-error').innerText = "Speed ít nhất là 5% tổng chỉ số.";
+        const requiredSpeed = total * 0.05;
+        document.getElementById('speed-error').innerText = `Speed ít nhất ${requiredSpeed}/${total}`;
+        document.getElementById('speed-error').style.display = 'block';
+        isValid = false;
+    } else if (speed > total * 0.6) {
+        const maxSpeed = total * 0.6;
+        document.getElementById('speed-error').innerText = `Speed cao hơn mức tối đa (${speed}/${maxSpeed})`;
         document.getElementById('speed-error').style.display = 'block';
         isValid = false;
     }
@@ -33,11 +40,11 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
     // Total stats condition
     const totalStats = hp + power + speed + shielding + recovery;
     if (totalStats > total) {
-        document.getElementById('total-error').innerText = "Tổng của HP, Power, Speed, Shielding và Recovery không được lớn hơn tổng chỉ số.";
+        document.getElementById('total-error').innerText = `Tổng của HP, Power, Speed, Shielding và Recovery không được lớn hơn tổng chỉ số (${totalStats}/${total})`;
         document.getElementById('total-error').style.display = 'block';
         isValid = false;
     } else if (totalStats < total) {
-        document.getElementById('total-error').innerText = "Tổng chỉ số của bạn đang thấp hơn tổng chỉ số, hãy lưu ý.";
+        document.getElementById('total-error').innerText = `Tổng chỉ số của bạn đang thấp hơn tổng chỉ số, hãy lưu ý (${totalStats}/${total})`;
         document.getElementById('total-error').style.display = 'block';
     }
 
