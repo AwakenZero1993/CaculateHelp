@@ -10,14 +10,19 @@
     <div class="container">
         <h1>Roleplay Calculator</h1>
         <form id="calculator-form">
-            <label for="stat1">Chỉ số 1:</label>
-            <input type="number" id="stat1" name="stat1" required>
+            <label for="total">Tổng chỉ số:</label>
+            <input type="number" id="total" name="total" required>
             
-            <label for="stat2">Chỉ số 2:</label>
-            <input type="number" id="stat2" name="stat2" required>
+            <label for="hp">HP:</label>
+            <input type="number" id="hp" name="hp" required>
+            <span id="hp-error" class="error-message"></span>
 
-            <label for="stat3">Chỉ số 3:</label>
-            <input type="number" id="stat3" name="stat3" required>
+            <label for="power">Power:</label>
+            <input type="number" id="power" name="power" required>
+
+            <label for="speed">Speed:</label>
+            <input type="number" id="speed" name="speed" required>
+            <span id="speed-error" class="error-message"></span>
 
             <button type="submit">Tính toán</button>
         </form>
