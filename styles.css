@@ -50,14 +50,11 @@ button:hover {
 }
 
 .error-message {
-    color: red; /* Màu chữ đỏ */
-    display: none;
+    color: red;
+    font-size: 0.8em;
+    margin-top: -5px;
     margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.error-message.active {
-    display: block;
+    display: none;
 }
 
 #result {
@@ -94,4 +91,34 @@ button:hover {
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
+}
+
+#stat-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    width: 48%;
+}
+
+.left-align {
+    justify-content: flex-start;
+}
+
+.right-align {
+    justify-content: flex-end;
+}
+
+.left-align span:last-child {
+    margin-left: 5px;
+}
+
+.right-align span:first-child {
+    margin-right: 5px;
 }
