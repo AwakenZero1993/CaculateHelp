@@ -64,3 +64,27 @@ button:hover {
     margin-top: 20px;
     text-align: center;
 }
+
+#input-values {
+    display: none;
+    margin-top: 10px;
+}
+
+#input-values p {
+    margin: 5px 0;
+}
+
+#copy-values {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#copy-values:hover {
+    background-color: #0056b3;
+}
