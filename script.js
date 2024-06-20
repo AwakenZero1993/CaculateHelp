@@ -1,3 +1,32 @@
+document.getElementById('total').addEventListener('change', function() {
+    const total = parseFloat(this.value);
+
+    // Xóa giá trị của các trường nhập liệu
+    document.getElementById('hp').value = '';
+    document.getElementById('power').value = '';
+    document.getElementById('speed').value = '';
+    document.getElementById('shielding').value = '';
+    document.getElementById('recovery').value = '';
+
+    // Xóa các cảnh báo lỗi
+    document.getElementById('hp').placeholder = '';
+    document.getElementById('speed').placeholder = '';
+    document.getElementById('total-error').innerText = '';
+    document.getElementById('total-error').style.display = 'none';
+
+    // Hiển thị các trường nhập chỉ số khác
+    document.getElementById('stat-inputs').style.display = 'block';
+
+    // Hiển thị cảnh báo về HP trong placeholder
+    const requiredHp = (total * 0.2).toFixed(2);
+    document.getElementById('hp').placeholder = `Giá trị HP thấp nhất yêu cầu = ${requiredHp}`;
+
+    // Hiển thị cảnh báo về Speed trong placeholder
+    const minSpeed = (total * 0.05).toFixed(2);
+    const maxSpeed = (total * 0.6).toFixed(2);
+    document.getElementById('speed').placeholder = `Speed phải nằm trong khoảng ${minSpeed} và ${maxSpeed}`;
+});
+
 document.getElementById('calculator-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -13,29 +42,25 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
 
     let isValid = true;
 
+    // Reset placeholder
+    document.getElementById('hp').placeholder = '';
+    document.getElementById('speed').placeholder = '';
+
     // Reset error messages and styles
-    document.getElementById('hp-error').innerText = '';
-    document.getElementById('hp-error').style.display = 'none';
-
-    document.getElementById('speed-error').innerText = '';
-    document.getElementById('speed-error').style.display = 'none';
-
     document.getElementById('total-error').innerText = '';
     document.getElementById('total-error').style.display = 'none';
 
     // Validation logic
     if (hp < total * 0.2) {
-        const requiredHp = total * 0.2;
-        document.getElementById('hp-error').innerText = `Giá trị HP thấp nhất yêu cầu = ${requiredHp}`;
-        document.getElementById('hp-error').style.display = 'block';
+        const requiredHp = (total * 0.2).toFixed(2);
+        document.getElementById('hp').placeholder = `Giá trị HP thấp nhất yêu cầu = ${requiredHp}`;
         isValid = false;
     }
 
-    const minSpeed = total * 0.05;
-    const maxSpeed = total * 0.6;
+    const minSpeed = (total * 0.05).toFixed(2);
+    const maxSpeed = (total * 0.6).toFixed(2);
     if (speed < minSpeed || speed > maxSpeed) {
-        document.getElementById('speed-error').innerText = `Speed phải nằm trong khoảng ${minSpeed} and ${maxSpeed}`;
-        document.getElementById('speed-error').style.display = 'block';
+        document.getElementById('speed').placeholder = `Speed phải nằm trong khoảng ${minSpeed} và ${maxSpeed}`;
         isValid = false;
     }
 
@@ -66,11 +91,22 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
 
 // Event listener for copy button
 document.getElementById('copy-values').addEventListener('click', function() {
-    const inputValues = document.getElementById('input-values');
-    const range = document.createRange();
-    range.selectNode(inputValues);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
+    const inputValues = Array.from(document.querySelectorAll('#input-values p'))
+                             .map(p => p.innerText)
+                             .join('\n');
+
+    navigator.clipboard.writeText(inputValues)
+        .then(() => {
+            const successMessage = document.createElement('p');
+            successMessage.classList.add('success-message');
+            successMessage.textContent = 'Đã sao chép thông tin thành công! Bạn có thể dán vào profile.';
+            document.getElementById('success-message').appendChild(successMessage);
+
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        })
+        .catch((err) => {
+            console.error('Failed to copy text: ', err);
+        });
 });
