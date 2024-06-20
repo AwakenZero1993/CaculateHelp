@@ -24,6 +24,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;  /* Làm đậm nhãn */
 }
 
 input[type="number"] {
