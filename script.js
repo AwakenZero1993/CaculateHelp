@@ -52,8 +52,12 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
 
     // If everything is valid, display input values and copy button
     if (isValid) {
-        const inputValuesText = `Tổng chỉ số: ${total}\nHP: ${hp}*10 = ${hp * 10}\nPow: ${power}\nSpd: ${speed}\nShd: ${shielding}\nRec: ${recovery}`;
-        document.getElementById('input-values').innerText = inputValuesText;
+        document.getElementById('input-total').innerText = total;
+        document.getElementById('input-hp').innerText = `${hp}*10 = ${hp * 10}`;
+        document.getElementById('input-power').innerText = power;
+        document.getElementById('input-speed').innerText = speed;
+        document.getElementById('input-shielding').innerText = shielding;
+        document.getElementById('input-recovery').innerText = recovery;
 
         document.getElementById('input-values').style.display = 'block';
         document.getElementById('copy-values').style.display = 'block'; // Hiển thị nút "Copy"
