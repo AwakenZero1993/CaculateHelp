@@ -3,37 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roleplay Calculator</title>
+    <title>Profile Assist Tool</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Roleplay Calculator</h1>
         <form id="calculator-form">
-            <label for="total"><strong>Tổng chỉ số:</strong></label><br>
-            <input type="number" id="total" name="total" required><br>
+            <label for="total"><strong>Base Stat:</strong></label>
+            <input type="number" id="total" name="total" required>
             
-            <label for="hp"><strong>HP:</strong></label><br>
-            <input type="number" id="hp" name="hp" required><br>
-            <span id="hp-error" class="error-message"></span><br>
+            <label for="hp"><strong>HP:</strong></label>
+            <input type="number" id="hp" name="hp" required>
+            <span id="hp-error" class="error-message"></span>
 
-            <label for="power"><strong>Power:</strong></label><br>
-            <input type="number" id="power" name="power"><br>
+            <label for="power"><strong>Power:</strong></label>
+            <input type="number" id="power" name="power">
 
-            <label for="speed"><strong>Speed:</strong></label><br>
-            <input type="number" id="speed" name="speed"><br>
-            <span id="speed-error" class="error-message"></span><br>
+            <label for="speed"><strong>Speed:</strong></label>
+            <input type="number" id="speed" name="speed">
+            <span id="speed-error" class="error-message"></span>
 
-            <label for="shielding"><strong>Shielding (SHD):</strong></label><br>
-            <input type="number" id="shielding" name="shielding"><br>
+            <label for="shielding"><strong>Shielding (SHD):</strong></label>
+            <input type="number" id="shielding" name="shielding">
 
-            <label for="recovery"><strong>Recovery (REC):</strong></label><br>
-            <input type="number" id="recovery" name="recovery"><br>
+            <label for="recovery"><strong>Recovery (REC):</strong></label>
+            <input type="number" id="recovery" name="recovery">
 
-            <span id="total-error" class="error-message"></span><br>
+            <span id="total-error" class="error-message"></span>
             
             <button type="submit">Kiểm tra tính hợp lệ</button>
         </form>
+        
+        <div id="input-values">
+            <p><strong>Base stat:</strong> <span id="input-total"></span></p>
+            <p><strong>HP:</strong> <span id="input-hp"></span></p>
+            <p><strong>Pow:</strong> <span id="input-power"></span></p>
+            <p><strong>Spd:</strong> <span id="input-speed"></span></p>
+            <p><strong>Shd:</strong> <span id="input-shielding"></span></p>
+            <p><strong>Rec:</strong> <span id="input-recovery"></span></p>
+            <button id="copy-values">Copy</button>
+        </div>
+
         <div id="result"></div>
     </div>
     <script src="script.js"></script>
