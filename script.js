@@ -1,16 +1,33 @@
 document.getElementById('calculator-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const stat1 = parseFloat(document.getElementById('stat1').value);
-    const stat2 = parseFloat(document.getElementById('stat2').value);
-    const stat3 = parseFloat(document.getElementById('stat3').value);
+    const total = parseFloat(document.getElementById('total').value);
+    const hp = parseFloat(document.getElementById('hp').value);
+    const power = parseFloat(document.getElementById('power').value);
+    const speed = parseFloat(document.getElementById('speed').value);
 
-    if (isNaN(stat1) || isNaN(stat2) || isNaN(stat3)) {
-        alert("Vui lòng nhập tất cả các chỉ số!");
-        return;
+    let isValid = true;
+
+    // Reset error messages
+    document.getElementById('hp-error').style.display = 'none';
+    document.getElementById('speed-error').style.display = 'none';
+
+    // HP condition: at least 20% of total
+    if (hp < total * 0.2) {
+        document.getElementById('hp-error').innerText = "HP phải ít nhất 20% tổng chỉ số.";
+        document.getElementById('hp-error').style.display = 'block';
+        isValid = false;
     }
 
-    const result = (stat1 + stat2 + stat3) / 3;  // Ví dụ: tính trung bình ba chỉ số
+    // Speed condition: no more than 60% of total
+    if (speed > total * 0.6) {
+        document.getElementById('speed-error').innerText = "Speed không được cao hơn 60% tổng chỉ số.";
+        document.getElementById('speed-error').style.display = 'block';
+        isValid = false;
+    }
 
-    document.getElementById('result').innerText = "Kết quả: " + result.toFixed(2);
+    if (isValid) {
+        const result = (hp + power + speed) / 3;  // Example calculation: average of three stats
+        document.getElementById('result').innerText = "Kết quả: " + result.toFixed(2);
+    }
 });
