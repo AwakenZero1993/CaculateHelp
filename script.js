@@ -3,10 +3,10 @@ document.getElementById('calculator-form').addEventListener('submit', function(e
 
     const total = parseFloat(document.getElementById('total').value);
     const hp = parseFloat(document.getElementById('hp').value);
-    const power = parseFloat(document.getElementById('power').value);
+    const power = parseFloat(document.getElementById('power').value) || 0; // Default to 0 if empty
     const speed = parseFloat(document.getElementById('speed').value);
-    const shielding = parseFloat(document.getElementById('shielding').value);
-    const recovery = parseFloat(document.getElementById('recovery').value);
+    const shielding = parseFloat(document.getElementById('shielding').value) || 0; // Default to 0 if empty
+    const recovery = parseFloat(document.getElementById('recovery').value) || 0; // Default to 0 if empty
 
     let isValid = true;
 
