@@ -11,24 +11,24 @@
         <h1>Roleplay Calculator</h1>
         <form id="calculator-form">
             <label for="total"><strong>Base Stat:</strong></label>
-            <input type="number" id="total" name="total" required>
+            <input type="number" id="total" name="total" required min="0">
             
             <label for="hp"><strong>HP:</strong></label>
-            <input type="number" id="hp" name="hp" required>
+            <input type="number" id="hp" name="hp" required min="0">
             <span id="hp-error" class="error-message"></span>
 
             <label for="power"><strong>Power:</strong></label>
-            <input type="number" id="power" name="power">
+            <input type="number" id="power" name="power" min="0">
 
             <label for="speed"><strong>Speed:</strong></label>
-            <input type="number" id="speed" name="speed">
+            <input type="number" id="speed" name="speed" min="0">
             <span id="speed-error" class="error-message"></span>
 
             <label for="shielding"><strong>Shielding (SHD):</strong></label>
-            <input type="number" id="shielding" name="shielding">
+            <input type="number" id="shielding" name="shielding" min="0">
 
             <label for="recovery"><strong>Recovery (REC):</strong></label>
-            <input type="number" id="recovery" name="recovery">
+            <input type="number" id="recovery" name="recovery" min="0">
 
             <span id="total-error" class="error-message"></span>
             
