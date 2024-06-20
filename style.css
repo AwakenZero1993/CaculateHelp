@@ -24,7 +24,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
-    font-weight: bold;  /* Làm đậm nhãn */
+    font-weight: bold;
 }
 
 input[type="number"] {
@@ -50,10 +50,14 @@ button:hover {
 }
 
 .error-message {
-    color: red;
+    color: red; /* Màu chữ đỏ */
     display: none;
     margin-bottom: 10px;
-    font-weight: bold;  /* Làm đậm màu đỏ */
+    font-weight: bold;
+}
+
+.error-message.active {
+    display: block;
 }
 
 #result {
