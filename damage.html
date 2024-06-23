@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ tính toán sát thương</title>
+    <link rel="stylesheet" href="damage-styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Công cụ tính toán sát thương</h1>
+        </header>
+        <main>
+            <div class="section">
+                <h2 class="section-title" onclick="toggleSection('stat-calc')">1. Hỗ trợ tính toán stat</h2>
+                <div id="stat-calc" class="section-content" style="display: none;">
+                    <form id="stat-calc-form">
+                        <label for="base-stat">Base Stat:</label>
+                        <input type="number" id="base-stat" required>
+                        
+                        <label for="buff-count">Số lượng buff:</label>
+                        <input type="number" id="buff-count" value="0" min="0">
+                        
+                        <div id="buff-inputs"></div>
+                        
+                        <label for="debuff-count">Số lượng debuff:</label>
+                        <input type="number" id="debuff-count" value="0" min="0">
+                        
+                        <div id="debuff-inputs"></div>
+                    </form>
+                    <div id="stat-calc-result"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title" onclick="toggleSection('damage-dealt')">2. Hỗ trợ tính sát thương gây ra</h2>
+                <div id="damage-dealt" class="section-content" style="display: none;">
+                    <form id="damage-dealt-form">
+                        <label for="attack-count">Số lượng đòn tấn công:</label>
+                        <input type="number" id="attack-count" min="1" value="1" required>
+                        
+                        <div id="attacks-container"></div>
+                    </form>
+                    <div id="damage-dealt-result"></div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title" onclick="toggleSection('damage-received')">3. Hỗ trợ tính sát thương nhận vào</h2>
+                <div id="damage-received" class="section-content" style="display: none;">
+                    <form id="damage-received-form">
+                        <!-- Nội dung form sẽ được tạo động bởi JavaScript -->
+                    </form>
+                    <div id="damage-received-result"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="damage-script.js"></script>
+    <script src="damage-received-script.js"></script>
+</body>
+</html>
