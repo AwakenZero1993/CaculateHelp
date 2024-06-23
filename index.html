@@ -8,59 +8,58 @@
 </head>
 <body>
     <div class="container">
-        <h1>Profile Assist Tool</h1>
-        <form id="calculator-form">
-            <label for="total"><strong>Base Stat:</strong></label>
-            <input type="number" id="total" name="total" required min="0">
+        <header>
+            <h1>Profile Assist Tool</h1>
+        </header>
+        <main>
+            <form id="calculator-form">
+                <label for="total">Base Stat:</label>
+                <input type="number" id="total" name="total" required min="0" aria-label="Base Stat">
 
 <div id="stat-summary">
-    <div class="stat-item left-align">
-        <span><strong>Base Stat:</strong></span>
-        <span id="base-total"></span>
-    </div>
     <div class="stat-item right-align">
-        <span><strong>Remaining:</strong></span>
+        <span>Remaining:</span>
         <span id="remaining-total"></span>
     </div>
 </div>
 
-            <div id="stat-inputs" style="display: none;">
-                <label for="hp"><strong>HP: </strong></label>
-                <input type="number" id="hp" name="hp" required min="0" placeholder="">
-                <span id="hp-error" class="error-message"></span>
+                <div id="stat-inputs">
+                    <label for="hp">HP:</label>
+                    <input type="number" id="hp" name="hp" required min="0" aria-label="HP">
+                    <span id="hp-error" class="error-message"></span>
 
-                <label for="power"><strong>Power:</strong></label>
-                <input type="number" id="power" name="power" min="0">
-                <span id="power-error" class="error-message"></span>
+                    <label for="power">Power:</label>
+                    <input type="number" id="power" name="power" min="0" aria-label="Power">
+                    <span id="power-error" class="error-message"></span>
 
-                <label for="speed"><strong>Speed:</strong></label>
-                <input type="number" id="speed" name="speed" min="0" placeholder="">
-                <span id="speed-error" class="error-message"></span>
+                    <label for="speed">Speed:</label>
+                    <input type="number" id="speed" name="speed" min="0" aria-label="Speed">
+                    <span id="speed-error" class="error-message"></span>
 
-                <label for="shielding"><strong>Shielding (SHD):</strong></label>
-                <input type="number" id="shielding" name="shielding" min="0">
-                <span id="shielding-error" class="error-message"></span>
+                    <label for="shielding">Shielding (SHD):</label>
+                    <input type="number" id="shielding" name="shielding" min="0" aria-label="Shielding">
+                    <span id="shielding-error" class="error-message"></span>
 
-                <label for="recovery"><strong>Recovery (REC):</strong></label>
-                <input type="number" id="recovery" name="recovery" min="0">
-                <span id="recovery-error" class="error-message"></span>
+                    <label for="recovery">Recovery (REC):</label>
+                    <input type="number" id="recovery" name="recovery" min="0" aria-label="Recovery">
+                    <span id="recovery-error" class="error-message"></span>
 
-                <span id="total-error" class="error-message"></span>
+                    <span id="total-error" class="error-message"></span>
+                </div>
+            </form>
+
+            <div id="input-values">
+                <p>Base stat: <span id="input-total"></span></p>
+                <p>HP: <span id="input-hp"></span></p>
+                <p>Pow: <span id="input-power"></span></p>
+                <p>Spd: <span id="input-speed"></span></p>
+                <p>Shd: <span id="input-shielding"></span></p>
+                <p>Rec: <span id="input-recovery"></span></p>
             </div>
-        </form>
 
-        <div id="input-values">
-            <p><strong>Base stat:</strong> <span id="input-total"></span></p>
-            <p><strong>HP:</strong> <span id="input-hp"></span></p>
-            <p><strong>Pow:</strong> <span id="input-power"></span></p>
-            <p><strong>Spd:</strong> <span id="input-speed"></span></p>
-            <p><strong>Shd:</strong> <span id="input-shielding"></span></p>
-            <p><strong>Rec:</strong> <span id="input-recovery"></span></p>
-        </div>
-        <button id="copy-values">Copy</button>
-        <div id="success-message"></div>
-
-        <div id="result"></div>
+            <button id="copy-values">Copy</button>
+            <div id="success-message"></div>
+        </main>
     </div>
     <script src="script.js"></script>
 </body>
