@@ -1,11 +1,23 @@
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --bg-color: #f4f4f4;
+    --text-color: #333;
+    --border-color: #ccc;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
@@ -13,7 +25,8 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 100%;
+    max-width: 400px;
 }
 
 h1 {
@@ -31,18 +44,20 @@ input[type="number"] {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 button {
     width: 100%;
     padding: 10px;
-    background-color: #28a745;
+    background-color: var(--success-color);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
@@ -50,16 +65,11 @@ button:hover {
 }
 
 .error-message {
-    color: red;
+    color: var(--error-color);
     font-size: 0.8em;
     margin-top: -5px;
     margin-bottom: 10px;
     display: none;
-}
-
-#result {
-    margin-top: 20px;
-    text-align: center;
 }
 
 #input-values {
@@ -73,13 +83,7 @@ button:hover {
 
 #copy-values {
     display: none;
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: var(--primary-color);
 }
 
 #copy-values:hover {
@@ -87,7 +91,7 @@ button:hover {
 }
 
 #success-message {
-    color: green;
+    color: var(--success-color);
     font-weight: bold;
     text-align: center;
     margin-top: 10px;
@@ -95,30 +99,17 @@ button:hover {
 
 #stat-summary {
     display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    justify-content: flex-end;
+    margin: 10px 0;
     font-weight: bold;
 }
 
 .stat-item {
     display: flex;
-    justify-content: space-between;
-    width: 48%;
-}
-
-.left-align {
-    justify-content: flex-start;
-}
-
-.right-align {
     justify-content: flex-end;
 }
 
-.left-align span:last-child {
-    margin-left: 5px;
-}
-
-.right-align span:first-child {
+.stat-item span:first-child {
     margin-right: 5px;
 }
+
