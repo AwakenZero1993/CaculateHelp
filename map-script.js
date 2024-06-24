@@ -6,6 +6,12 @@ let offsetY = 0;
 const canvas = document.getElementById('mapCanvas');
 const ctx = canvas.getContext('2d');
 
+function initMap() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    drawMap();
+}
+
 function worldToScreen(x, y) {
     return {
         x: (x * scale + offsetX + canvas.width / 2),
@@ -26,7 +32,7 @@ function drawMap() {
     const origin = worldToScreen(0, 0);
     const gridSize = 50;
 
-    // Vẽ lưới
+    // Draw grid
     ctx.strokeStyle = '#ddd';
     ctx.beginPath();
     for (let x = origin.x % gridSize; x < canvas.width; x += gridSize) {
@@ -39,7 +45,7 @@ function drawMap() {
     }
     ctx.stroke();
 
-    // Vẽ trục tọa độ
+    // Draw axes
     ctx.strokeStyle = '#000';
     ctx.beginPath();
     ctx.moveTo(0, origin.y);
@@ -48,7 +54,7 @@ function drawMap() {
     ctx.lineTo(origin.x, canvas.height);
     ctx.stroke();
 
-    // Vẽ số trên trục tọa độ
+    // Draw axis labels
     ctx.fillStyle = '#000';
     ctx.font = '12px Arial';
     const step = Math.ceil(gridSize / scale);
@@ -61,7 +67,7 @@ function drawMap() {
         ctx.fillText(i.toString(), origin.x + 5, y);
     }
 
-    // Vẽ các điểm
+    // Draw points
     points.forEach(point => {
         const {x, y} = worldToScreen(point.x, point.y);
         ctx.fillStyle = point.type === 'ally' ? 'blue' : 'red';
@@ -190,28 +196,50 @@ document.getElementById('aoeForm').addEventListener('submit', function(e) {
     ctx.arc(screenX, screenY, screenRadius, 0, 2 * Math.PI);
     ctx.stroke();
 
-    let affectedAllies = 0;
-    let affectedEnemies = 0;
+    let affectedAllies = [];
+    let affectedEnemies = [];
     points.forEach(point => {
         const distance = Math.sqrt((point.x - x)**2 + (point.y - y)**2);
         if (distance <= radius) {
             if (point.type === 'ally') {
-                affectedAllies++;
+                affectedAllies.push(point.name);
             } else {
-                affectedEnemies++;
+                affectedEnemies.push(point.name);
             }
         }
     });
 
-    document.getElementById('aoeResult').innerHTML = `
+    let resultHTML = `
         <p>Tọa độ tâm AoE: (${x}, ${y})</p>
         <p>Bán kính AoE: ${radius}</p>
         <p>Loại AoE: ${type === 'damage' ? 'Sát thương' : 'Buff'}</p>
-        <p>Số đồng minh bị ảnh hưởng: ${affectedAllies}</p>
-        <p>Số kẻ địch bị ảnh hưởng: ${affectedEnemies}</p>
-        ${type === 'damage' && affectedAllies > 0 ? '<p>Cảnh báo: Có friendly fire!</p>' : ''}
     `;
+
+    if (type === 'damage') {
+        if (affectedAllies.length > 0) {
+            resultHTML += `
+                <div class="friendly-fire-alert">
+                    <p>CẢNH BÁO: Có friendly fire!</p>
+                    <p>Đồng minh bị ảnh hưởng: ${affectedAllies.join(', ')}</p>
+                </div>
+            `;
+        }
+        resultHTML += `<p>Số kẻ địch bị sát thương: ${affectedEnemies.length}</p>`;
+    } else { // Buff
+        if (affectedEnemies.length > 0) {
+            resultHTML += `
+                <div class="enemy-buff-alert">
+                    <p>CẢNH BÁO: Có kẻ địch được buff!</p>
+                    <p>Kẻ địch được buff: ${affectedEnemies.join(', ')}</p>
+                </div>
+            `;
+        }
+        resultHTML += `<p>Số đồng minh được buff: ${affectedAllies.length}</p>`;
+    }
+
+    document.getElementById('aoeResult').innerHTML = resultHTML;
 });
+
 
 function updatePointDropdowns() {
     const point1Select = document.getElementById('point1');
@@ -292,6 +320,8 @@ clearButton.addEventListener('click', clearCookie);
 document.querySelector('.control-section').appendChild(clearButton);
 
 window.addEventListener('load', () => {
+    initMap();
     loadPointsFromCookie();
-    drawMap();
 });
+
+window.addEventListener('resize', initMap);

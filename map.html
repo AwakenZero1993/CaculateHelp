@@ -3,107 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hỗ trợ về Bản đồ và tọa độ</title>
+    <title>Bản đồ tọa độ và AoE</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="back-button">
-            <i class="fas fa-home"></i>
-            <span>Trang chủ</span>
-        </a>
-        
-        <header>
-            <h1><i class="fas fa-map-marked-alt"></i> Hỗ trợ về Bản đồ và tọa độ</h1>
-        </header>
+        <h1>Bản đồ tọa độ và AoE</h1>
 
-        <main>
-            <div class="map-section">
-                <h2>Bản đồ tọa độ</h2>
-                <canvas id="mapCanvas" width="600" height="600"></canvas>
+        <div class="map-section">
+            <canvas id="mapCanvas"></canvas>
+        </div>
+
+        <div class="control-section">
+            <div class="input-card">
+                <h2>Quản lý điểm</h2>
+                <form id="pointForm">
+                    <div class="form-group">
+                        <label for="pointName">Tên điểm:</label>
+                        <input type="text" id="pointName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="xCoord">X:</label>
+                        <input type="number" id="xCoord" required step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="yCoord">Y:</label>
+                        <input type="number" id="yCoord" required step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="pointType">Loại:</label>
+                        <select id="pointType">
+                            <option value="ally">Đồng minh</option>
+                            <option value="enemy">Kẻ địch</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Thêm/Cập nhật điểm</button>
+                </form>
+                <button id="deletePoint" class="btn-secondary">Xóa điểm</button>
             </div>
-            <div class="control-section">
-                <div class="card input-card">
-                    <h2>Quản lý điểm</h2>
-                    <form id="pointForm">
-                        <div class="form-group">
-                            <label for="pointName">Tên điểm:</label>
-                            <input type="text" id="pointName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="xCoord">Tọa độ X:</label>
-                            <input type="number" id="xCoord" required step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="yCoord">Tọa độ Y:</label>
-                            <input type="number" id="yCoord" required step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="pointType">Loại:</label>
-                            <select id="pointType">
-                                <option value="ally">Đồng minh</option>
-                                <option value="enemy">Kẻ địch</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary">Thêm/Cập nhật điểm</button>
-                    </form>
-                    <button id="deletePoint" class="btn-secondary">Xóa điểm</button>
-                </div>
 
-                <div class="card input-card">
-                    <h2>Danh sách điểm</h2>
-                    <ul id="pointList"></ul>
-                </div>
-
-                <div class="card input-card">
-                    <h2>Tính toán AoE</h2>
-                    <form id="aoeForm">
-                        <div class="form-group">
-                            <label for="aoeX">Tâm AoE X:</label>
-                            <input type="number" id="aoeX" required step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="aoeY">Tâm AoE Y:</label>
-                            <input type="number" id="aoeY" required step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="aoeRadius">Bán kính AoE:</label>
-                            <input type="number" id="aoeRadius" required min="0" step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="aoeType">Loại AoE:</label>
-                            <select id="aoeType">
-                                <option value="damage">Sát thương</option>
-                                <option value="buff">Buff</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary">Tính toán AoE</button>
-                    </form>
-                    <div id="aoeResult"></div>
-                </div>
-
-                <div class="card input-card">
-                    <h2>Tính khoảng cách</h2>
-                    <form id="distanceForm">
-                        <div class="form-group">
-                            <label for="point1">Điểm 1:</label>
-                            <select id="point1" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="point2">Điểm 2:</label>
-                            <select id="point2" required></select>
-                        </div>
-                        <button type="submit" class="btn-primary">Tính khoảng cách</button>
-                    </form>
-                    <div id="distanceResult"></div>
-                </div>
+            <div class="input-card">
+                <h2>Danh sách điểm</h2>
+                <ul id="pointList"></ul>
             </div>
-        </main>
 
-        <footer>
-            <p>&copy; 2024 Công cụ hỗ trợ Bản đồ và Tọa độ. All rights reserved.</p>
-        </footer>
+            <div class="input-card">
+                <h2>Tính toán AoE</h2>
+                <form id="aoeForm">
+                    <div class="form-group">
+                        <label for="aoeX">X:</label>
+                        <input type="number" id="aoeX" required step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="aoeY">Y:</label>
+                        <input type="number" id="aoeY" required step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="aoeRadius">Bán kính:</label>
+                        <input type="number" id="aoeRadius" required min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="aoeType">Loại:</label>
+                        <select id="aoeType">
+                            <option value="damage">Sát thương</option>
+                            <option value="buff">Buff</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Tính toán AoE</button>
+                </form>
+                <div id="aoeResult"></div>
+            </div>
+
+            <div class="input-card">
+                <h2>Tính khoảng cách</h2>
+                <form id="distanceForm">
+                    <div class="form-group">
+                        <label for="point1">Điểm 1:</label>
+                        <select id="point1" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="point2">Điểm 2:</label>
+                        <select id="point2" required></select>
+                    </div>
+                    <button type="submit" class="btn-primary">Tính khoảng cách</button>
+                </form>
+                <div id="distanceResult"></div>
+            </div>
+        </div>
     </div>
 
     <script src="map-script.js"></script>
