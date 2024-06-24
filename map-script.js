@@ -1,5 +1,5 @@
 let points = [];
-let scale = 10; // Tăng scale mặc định để các điểm không quá nhỏ
+let scale = 10;
 let offsetX = 0;
 let offsetY = 0;
 
@@ -119,7 +119,61 @@ canvas.addEventListener('mousedown', (e) => {
     canvas.addEventListener('mouseup', mouseup);
 });
 
-// ... (các hàm khác giữ nguyên)
+document.getElementById('pointForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('pointName').value;
+    const x = parseFloat(document.getElementById('xCoord').value);
+    const y = parseFloat(document.getElementById('yCoord').value);
+    const type = document.getElementById('pointType').value;
+
+    if (isNaN(x) || isNaN(y)) {
+        alert('Vui lòng nhập tọa độ hợp lệ.');
+        return;
+    }
+
+    const existingPointIndex = points.findIndex(p => p.name === name);
+    if (existingPointIndex !== -1) {
+        points[existingPointIndex] = { name, x, y, type };
+    } else {
+        points.push({ name, x, y, type });
+    }
+
+    drawMap();
+    updatePointList();
+    savePointsToCookie();
+    this.reset();
+});
+
+document.getElementById('deletePoint').addEventListener('click', function() {
+    const name = document.getElementById('pointName').value;
+    const index = points.findIndex(p => p.name === name);
+    if (index !== -1) {
+        points.splice(index, 1);
+        drawMap();
+        updatePointList();
+        savePointsToCookie();
+        document.getElementById('pointForm').reset();
+    }
+});
+
+function updatePointList() {
+    const list = document.getElementById('pointList');
+    list.innerHTML = '';
+    points.forEach(point => {
+        const li = document.createElement('li');
+        li.textContent = `${point.name}: (${point.x}, ${point.y}) - ${point.type === 'ally' ? 'Đồng minh' : 'Kẻ địch'}`;
+        li.addEventListener('click', () => fillPointForm(point));
+        list.appendChild(li);
+    });
+    updatePointDropdowns();
+}
+
+function fillPointForm(point) {
+    document.getElementById('pointName').value = point.name;
+    document.getElementById('xCoord').value = point.x;
+    document.getElementById('yCoord').value = point.y;
+    document.getElementById('pointType').value = point.type;
+}
 
 document.getElementById('aoeForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -136,8 +190,50 @@ document.getElementById('aoeForm').addEventListener('submit', function(e) {
     ctx.arc(screenX, screenY, screenRadius, 0, 2 * Math.PI);
     ctx.stroke();
 
-    // ... (phần còn lại của xử lý AoE giữ nguyên)
+    let affectedAllies = 0;
+    let affectedEnemies = 0;
+    points.forEach(point => {
+        const distance = Math.sqrt((point.x - x)**2 + (point.y - y)**2);
+        if (distance <= radius) {
+            if (point.type === 'ally') {
+                affectedAllies++;
+            } else {
+                affectedEnemies++;
+            }
+        }
+    });
+
+    document.getElementById('aoeResult').innerHTML = `
+        <p>Tọa độ tâm AoE: (${x}, ${y})</p>
+        <p>Bán kính AoE: ${radius}</p>
+        <p>Loại AoE: ${type === 'damage' ? 'Sát thương' : 'Buff'}</p>
+        <p>Số đồng minh bị ảnh hưởng: ${affectedAllies}</p>
+        <p>Số kẻ địch bị ảnh hưởng: ${affectedEnemies}</p>
+        ${type === 'damage' && affectedAllies > 0 ? '<p>Cảnh báo: Có friendly fire!</p>' : ''}
+    `;
 });
+
+function updatePointDropdowns() {
+    const point1Select = document.getElementById('point1');
+    const point2Select = document.getElementById('point2');
+    
+    point1Select.innerHTML = '<option value="">Chọn điểm</option>';
+    point2Select.innerHTML = '<option value="">Chọn điểm</option>';
+    
+    points.forEach(point => {
+        const option = document.createElement('option');
+        option.value = point.name;
+        option.textContent = `${point.name} (${point.x}, ${point.y})`;
+        point1Select.appendChild(option.cloneNode(true));
+        point2Select.appendChild(option);
+    });
+}
+
+function calculateDistance(point1, point2) {
+    const dx = point2.x - point1.x;
+    const dy = point2.y - point1.y;
+    return Math.sqrt(dx*dx + dy*dy);
+}
 
 document.getElementById('distanceForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -194,11 +290,6 @@ clearButton.textContent = 'Xóa dữ liệu';
 clearButton.classList.add('btn-secondary');
 clearButton.addEventListener('click', clearCookie);
 document.querySelector('.control-section').appendChild(clearButton);
-
-window.addEventListener('load', () => {
-    loadPointsFromCookie();
-    drawMap();
-});
 
 window.addEventListener('load', () => {
     loadPointsFromCookie();
