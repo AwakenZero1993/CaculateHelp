@@ -140,3 +140,224 @@ button:hover {
     width: 100%;
     box-sizing: border-box;
 }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    color: #1a73e8;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.tool-menu {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.tool-item {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tool-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.tool-link {
+    display: block;
+    padding: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+.tool-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.tool-item h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #1a73e8;
+}
+
+.tool-item p {
+    font-size: 0.9em;
+    color: #666;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #1a73e8;
+    font-size: 2em;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.highlight {
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+.error-message {
+    color: #d93025;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #1557b0;
+}
+
+#stat-summary {
+    background-color: #e8f0fe;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+#input-values {
+    background-color: #f8f9fa;
+}
+
+#input-values h2 {
+    margin-top: 0;
+    color: #1a73e8;
+}
+
+.back-button {
+    display: inline-block;
+    color: #1a73e8;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #1a73e8;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-button:hover {
+    background-color: #1557b0;
+    transform: translateY(-2px);
+}
+
+.back-button i {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.back-button span {
+    font-size: 1em;
+}
+
+@media (max-width: 600px) {
+    .back-button {
+        padding: 8px 12px;
+    }
+    
+    .back-button span {
+        display: none;
+    }
+    
+    .back-button i {
+        margin-right: 0;
+    }
+}

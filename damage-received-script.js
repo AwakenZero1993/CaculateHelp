@@ -322,7 +322,7 @@ function calculateDamageReceived() {
         <p>C: ${elementName} Affinity = ${C.toFixed(2)}</p>
         <h4>Công thức tính:</h4>
         <p>Final Dmg = (Dmg ${effectiveTrueDamage ? '' : 'x (1-A)'} ${effectivePiercing ? '' : '- B'}) x C</p>
-        <p><strong>Sát thương cuối cùng nhận vào: ${finalDamage.toFixed(2)}</strong></p>
+        <p><strong>Sát thương cuối cùng nhận vào: <span style="color: #FF0000; font-size: 1.2em;">${finalDamage.toFixed(2)}</span></strong></p>
     `;
 }
 

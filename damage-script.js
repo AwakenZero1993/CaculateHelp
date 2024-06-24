@@ -96,10 +96,10 @@ function updateBuffDebuffInputs(countInput, type, context) {
     container.innerHTML = '';
 
     for (let i = 0; i < count; i++) {
-        const label = type === 'buff' ? `Buff sát thương ${i + 1}` : `Debuff giảm sát thương ${i + 1}`;
+        const label = type === 'buff' ? `Buff chỉ số ${i + 1}` : `Debuff chỉ số ${i + 1}`;
         container.innerHTML += `
             <label for="${type}-${countInput.id}-${i}">${label} (%):</label>
-            <input type="number" id="${type}-${countInput.id}-${i}" class="${type}-input" min="0" max="100" required>
+            <input type="number" id="${type}-${countInput.id}-${i}" class="${type}-input" min="0" max="100" required placeholder="Nhập giá trị của ${type === 'buff' ? 'buff' : 'debuff'}">
         `;
     }
 
