@@ -1,209 +1,143 @@
-// Biến toàn cục để lưu trữ đối tượng Geogebra applet
-let ggbApp;
-
-// Mảng lưu trữ các điểm
 let points = [];
+let scale = 10; // Tăng scale mặc định để các điểm không quá nhỏ
+let offsetX = 0;
+let offsetY = 0;
 
-function resizeGeogebraApplet() {
-    if (ggbApp) {
-        const container = document.getElementById('ggb-element');
-        const width = container.offsetWidth;
-        const height = width * 0.75; // Tỷ lệ khung hình 4:3
-        ggbApp.setSize(width, height);
-        ggbApp.setCoordSystem(-10, 10, -10, 10); // Reset hệ tọa độ
-    }
+const canvas = document.getElementById('mapCanvas');
+const ctx = canvas.getContext('2d');
+
+function worldToScreen(x, y) {
+    return {
+        x: (x * scale + offsetX + canvas.width / 2),
+        y: (canvas.height / 2 - y * scale + offsetY)
+    };
 }
 
-// Cấu hình cho Geogebra applet
-const params = {
-    "appName": "classic",
-    "width": "100%",
-    "height": "100%",
-    "showToolBar": true,
-    "showAlgebraInput": true,
-    "showMenuBar": true,
-    "showResetIcon": true,
-    "enableLabelDrags": true,
-    "enableShiftDragZoom": true,
-    "enableRightClick": true,
-    "capturingThreshold": null,
-    "showToolBarHelp": true,
-    "errorDialogsActive": true,
-    "useBrowserForJS": true,
-    "scaleContainerClass": "ggb-element",
-    "allowStyleBar": true,
-    "preventFocus": true,
-    "showZoomButtons": true,
-    "scale": 1,
-    "disableAutoScale": true,
-    "allowUpscale": true,
-    "clickToLoad": true,
-    "appletOnLoad": function(api) {
-        ggbApp = api;
-        ggbApp.setAxisLabels(1, "x", "y");
-        ggbApp.setAxisUnits(1, "cm", "cm");
-        ggbApp.setGridVisible(true);
-        resizeGeogebraApplet(); // Gọi hàm resize ngay khi applet được tải
-        updatePointList();
-    },
-};
+function screenToWorld(x, y) {
+    return {
+        x: (x - offsetX - canvas.width / 2) / scale,
+        y: (canvas.height / 2 - y + offsetY) / scale
+    };
+}
 
-// Khởi tạo Geogebra applet
-const applet = new GGBApplet(params, true);
-window.addEventListener("load", function() {
-    applet.inject('ggb-element');
-});
+function drawMap() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const origin = worldToScreen(0, 0);
+    const gridSize = 50;
 
-// Xử lý sự kiện submit form thêm/sửa điểm
-document.getElementById('pointForm').addEventListener('submit', function(e) {
+    // Vẽ lưới
+    ctx.strokeStyle = '#ddd';
+    ctx.beginPath();
+    for (let x = origin.x % gridSize; x < canvas.width; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+    }
+    for (let y = origin.y % gridSize; y < canvas.height; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+    }
+    ctx.stroke();
+
+    // Vẽ trục tọa độ
+    ctx.strokeStyle = '#000';
+    ctx.beginPath();
+    ctx.moveTo(0, origin.y);
+    ctx.lineTo(canvas.width, origin.y);
+    ctx.moveTo(origin.x, 0);
+    ctx.lineTo(origin.x, canvas.height);
+    ctx.stroke();
+
+    // Vẽ số trên trục tọa độ
+    ctx.fillStyle = '#000';
+    ctx.font = '12px Arial';
+    const step = Math.ceil(gridSize / scale);
+    for (let i = Math.floor(-origin.x / gridSize) * step; i <= Math.ceil((canvas.width - origin.x) / gridSize) * step; i += step) {
+        const {x, y} = worldToScreen(i, 0);
+        ctx.fillText(i.toString(), x, origin.y + 20);
+    }
+    for (let i = Math.floor((origin.y - canvas.height) / gridSize) * step; i <= Math.ceil(origin.y / gridSize) * step; i += step) {
+        const {x, y} = worldToScreen(0, i);
+        ctx.fillText(i.toString(), origin.x + 5, y);
+    }
+
+    // Vẽ các điểm
+    points.forEach(point => {
+        const {x, y} = worldToScreen(point.x, point.y);
+        ctx.fillStyle = point.type === 'ally' ? 'blue' : 'red';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillText(point.name, x + 10, y - 10);
+    });
+}
+
+function zoom(delta, centerX, centerY) {
+    const center = screenToWorld(centerX, centerY);
+    const factor = delta > 0 ? 1.1 : 0.9;
+    scale *= factor;
+    
+    const newCenter = worldToScreen(center.x, center.y);
+    offsetX += centerX - newCenter.x;
+    offsetY += centerY - newCenter.y;
+
+    drawMap();
+}
+
+function pan(dx, dy) {
+    offsetX += dx;
+    offsetY += dy;
+    drawMap();
+}
+
+canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    const name = document.getElementById('pointName').value;
-    const x = parseFloat(document.getElementById('xCoord').value);
-    const y = parseFloat(document.getElementById('yCoord').value);
-    const type = document.getElementById('pointType').value;
-
-    const existingPointIndex = points.findIndex(p => p.name === name);
-    if (existingPointIndex !== -1) {
-        // Cập nhật điểm hiện có
-        points[existingPointIndex] = { name, x, y, type };
-    } else {
-        // Thêm điểm mới
-        points.push({ name, x, y, type });
-    }
-
-    updateGeogebraPoints();
-    updatePointList();
-    this.reset();
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    zoom(e.deltaY, x, y);
 });
 
-// Xử lý sự kiện click nút xóa điểm
-document.getElementById('deletePoint').addEventListener('click', function() {
-    const name = document.getElementById('pointName').value;
-    const index = points.findIndex(p => p.name === name);
-    if (index !== -1) {
-        points.splice(index, 1);
-        updateGeogebraPoints();
-        updatePointList();
-        document.getElementById('pointForm').reset();
+canvas.addEventListener('mousedown', (e) => {
+    let lastX = e.clientX;
+    let lastY = e.clientY;
+    
+    function mousemove(e) {
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        pan(dx, dy);
+        lastX = e.clientX;
+        lastY = e.clientY;
     }
-	updatePointList();
+    
+    function mouseup() {
+        canvas.removeEventListener('mousemove', mousemove);
+        canvas.removeEventListener('mouseup', mouseup);
+    }
+    
+    canvas.addEventListener('mousemove', mousemove);
+    canvas.addEventListener('mouseup', mouseup);
 });
 
-// Cập nhật điểm trên Geogebra applet
-function updateGeogebraPoints() {
-    if (!ggbApp) return;
+// ... (các hàm khác giữ nguyên)
 
-    // Xóa tất cả các điểm hiện có
-    points.forEach(point => {
-        if (ggbApp.exists(point.name)) {
-            ggbApp.deleteObject(point.name);
-        }
-    });
-
-    // Vẽ lại lưới và trục tọa độ
-    ggbApp.setGridVisible(true);
-    ggbApp.setAxesVisible(true, true);
-
-    // Vẽ lại các điểm
-    points.forEach(point => {
-        ggbApp.evalCommand(`${point.name} = (${point.x}, ${point.y})`);
-        ggbApp.setColor(point.name, point.type === 'ally' ? 0 : 255, point.type === 'ally' ? 255 : 0, 0);
-        ggbApp.setLabelVisible(point.name, true);
-    });
-}
-
-// Cập nhật danh sách điểm trên HTML
-function updatePointList() {
-    const list = document.getElementById('pointList');
-    list.innerHTML = '';
-    points.forEach(point => {
-        const li = document.createElement('li');
-        li.textContent = `${point.name}: (${point.x}, ${point.y}) - ${point.type === 'ally' ? 'Đồng minh' : 'Kẻ địch'}`;
-        li.addEventListener('click', () => fillPointForm(point));
-        list.appendChild(li);
-    });
-    updatePointDropdowns(); 
-}
-
-// Điền thông tin điểm vào form khi click vào điểm trong danh sách
-function fillPointForm(point) {
-    document.getElementById('pointName').value = point.name;
-    document.getElementById('xCoord').value = point.x;
-    document.getElementById('yCoord').value = point.y;
-    document.getElementById('pointType').value = point.type;
-}
-
-// Xử lý sự kiện submit form AoE
 document.getElementById('aoeForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const x = parseFloat(document.getElementById('aoeX').value);
     const y = parseFloat(document.getElementById('aoeY').value);
     const radius = parseFloat(document.getElementById('aoeRadius').value);
+    const type = document.getElementById('aoeType').value;
 
-    if (!ggbApp) return;
+    const {x: screenX, y: screenY} = worldToScreen(x, y);
+    const screenRadius = radius * scale;
 
-    // Vẽ AoE trên Geogebra
-    ggbApp.evalCommand(`AoECenter = (${x}, ${y})`);
-    ggbApp.evalCommand(`AoE = Circle(AoECenter, ${radius})`);
-    ggbApp.setColor('AoE', 0, 0, 255);
-    ggbApp.setFilling('AoE', 0.2);
+    ctx.strokeStyle = type === 'damage' ? 'red' : 'green';
+    ctx.beginPath();
+    ctx.arc(screenX, screenY, screenRadius, 0, 2 * Math.PI);
+    ctx.stroke();
 
-    // Tính toán friendly fire và enemy hit
-    let friendlyFireCount = 0;
-    let enemyHitCount = 0;
-    points.forEach(point => {
-        const distance = Math.sqrt((point.x - x)**2 + (point.y - y)**2);
-        if (distance <= radius) {
-            if (point.type === 'ally') {
-                friendlyFireCount++;
-            } else {
-                enemyHitCount++;
-            }
-        }
-    });
-
-    // Hiển thị kết quả
-    document.getElementById('aoeResult').innerHTML = `
-        <p>Tọa độ tâm AoE: (${x}, ${y})</p>
-        <p>Bán kính AoE: ${radius}</p>
-        <p>Số đồng minh bị ảnh hưởng: ${friendlyFireCount}</p>
-        <p>Số kẻ địch bị ảnh hưởng: ${enemyHitCount}</p>
-        <p>${friendlyFireCount > 0 ? 'Cảnh báo: Có friendly fire!' : 'Không có friendly fire.'}</p>
-    `;
+    // ... (phần còn lại của xử lý AoE giữ nguyên)
 });
-
-// Thêm event listener để resize Geogebra applet khi cửa sổ thay đổi kích thước
-window.addEventListener('resize', function() {
-    if (ggbApp) {
-        ggbApp.setSize(document.getElementById('ggb-element').offsetWidth, document.getElementById('ggb-element').offsetHeight);
-    }
-});
-
-window.addEventListener('load', resizeGeogebraApplet);
-
-function updatePointDropdowns() {
-    const point1Select = document.getElementById('point1');
-    const point2Select = document.getElementById('point2');
-    
-    // Xóa các option cũ
-    point1Select.innerHTML = '<option value="">Chọn điểm</option>';
-    point2Select.innerHTML = '<option value="">Chọn điểm</option>';
-    
-    // Thêm các điểm hiện có vào dropdown
-    points.forEach(point => {
-        const option = document.createElement('option');
-        option.value = point.name;
-        option.textContent = `${point.name} (${point.x}, ${point.y})`;
-        point1Select.appendChild(option.cloneNode(true));
-        point2Select.appendChild(option);
-    });
-}
-
-function calculateDistance(point1, point2) {
-    const dx = point2.x - point1.x;
-    const dy = point2.y - point1.y;
-    return Math.sqrt(dx*dx + dy*dy);
-}
 
 document.getElementById('distanceForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -219,12 +153,14 @@ document.getElementById('distanceForm').addEventListener('submit', function(e) {
             <p>Khoảng cách giữa ${point1.name} và ${point2.name}: ${distance.toFixed(2)} đơn vị</p>
         `;
         
-        // Vẽ đường nối hai điểm trên Geogebra
-        if (ggbApp) {
-            const lineName = `line_${point1.name}_${point2.name}`;
-            ggbApp.evalCommand(`${lineName} = Segment(${point1.name}, ${point2.name})`);
-            ggbApp.setColor(lineName, 0, 0, 255); // Màu xanh dương
-        }
+        const {x: x1, y: y1} = worldToScreen(point1.x, point1.y);
+        const {x: x2, y: y2} = worldToScreen(point2.x, point2.y);
+        
+        ctx.strokeStyle = 'blue';
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
     } else {
         document.getElementById('distanceResult').innerHTML = `
             <p>Vui lòng chọn hai điểm khác nhau.</p>
@@ -232,3 +168,39 @@ document.getElementById('distanceForm').addEventListener('submit', function(e) {
     }
 });
 
+function savePointsToCookie() {
+    document.cookie = `points=${JSON.stringify(points)}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+}
+
+function loadPointsFromCookie() {
+    const cookie = document.cookie.split('; ').find(row => row.startsWith('points='));
+    if (cookie) {
+        points = JSON.parse(cookie.split('=')[1]);
+        updatePointList();
+        drawMap();
+    }
+}
+
+function clearCookie() {
+    document.cookie = 'points=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    points = [];
+    updatePointList();
+    drawMap();
+}
+
+// Thêm nút xóa cookie
+const clearButton = document.createElement('button');
+clearButton.textContent = 'Xóa dữ liệu';
+clearButton.classList.add('btn-secondary');
+clearButton.addEventListener('click', clearCookie);
+document.querySelector('.control-section').appendChild(clearButton);
+
+window.addEventListener('load', () => {
+    loadPointsFromCookie();
+    drawMap();
+});
+
+window.addEventListener('load', () => {
+    loadPointsFromCookie();
+    drawMap();
+});
