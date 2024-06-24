@@ -1,88 +1,61 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const statCalcForm = document.getElementById('stat-calc-form');
-    const damageDealtForm = document.getElementById('damage-dealt-form');
-    const damageReceivedForm = document.getElementById('damage-received-form');
+document.addEventListener('DOMContentLoaded', initializeApp);
 
-    statCalcForm.addEventListener('input', calculateStats);
-    damageDealtForm.addEventListener('input', calculateDamageDealt);
-    damageReceivedForm.addEventListener('input', calculateDamageReceived);
+function initializeApp() {
+    const forms = {
+        statCalc: document.getElementById('stat-calc-form'),
+        damageDealt: document.getElementById('damage-dealt-form'),
+        damageReceived: document.getElementById('damage-received-form')
+    };
 
-    document.getElementById('buff-count').addEventListener('input', function() {
-        updateBuffDebuffInputs(this, 'buff', 'stat-calc');
-    });
-    document.getElementById('debuff-count').addEventListener('input', function() {
-        updateBuffDebuffInputs(this, 'debuff', 'stat-calc');
+    forms.statCalc.addEventListener('input', calculateStats);
+    forms.damageDealt.addEventListener('input', calculateDamageDealt);
+    forms.damageReceived.addEventListener('input', calculateDamageReceived);
+
+    ['buff', 'debuff'].forEach(type => {
+		    document.getElementById('stat-calc-form').addEventListener('input', calculateStats);
+        document.getElementById(`${type}-count`).addEventListener('input', e => updateStatBuffDebuffInputs(e.target, type));
     });
 
     document.getElementById('attack-count').addEventListener('input', updateAttackInputs);
 
-    // Mặc định hiển thị thông tin cho 1 đòn tấn công
     updateAttackInputs();
-});
+}
 
 function toggleSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    const allSections = document.querySelectorAll('.section-content');
-    
-    allSections.forEach(s => {
-        if (s.id === sectionId) {
-            s.style.display = s.style.display === 'none' ? 'block' : 'none';
-        } else {
-            s.style.display = 'none';
-        }
-    });
+    const sections = document.querySelectorAll('.section-content');
+    sections.forEach(s => s.style.display = s.id === sectionId ? (s.style.display === 'none' ? 'block' : 'none') : 'none');
+}
+
+function updateStatBuffDebuffInputs(countInput, type) {
+    const count = parseInt(countInput.value) || 0;
+    const container = document.getElementById(`${type}-inputs`);
+    container.innerHTML = Array.from({length: count}, (_, i) => createBuffDebuffInput(type, i)).join('');
+
+    container.querySelectorAll(`.${type}-input`).forEach(input => input.addEventListener('input', calculateStats));
+    calculateStats();
+}
+
+function createBuffDebuffInput(type, index) {
+    const label = `${type.charAt(0).toUpperCase() + type.slice(1)} chỉ số ${index + 1}`;
+    return `
+        <div class="form-group">
+            <label for="${type}-${index}">${label} (%):</label>
+            <input type="number" id="${type}-${index}" class="${type}-input" min="0" max="100" required placeholder="Nhập giá trị của ${type}">
+        </div>
+    `;
 }
 
 function updateAttackInputs() {
     const attackCount = parseInt(document.getElementById('attack-count').value) || 1;
     const attacksContainer = document.getElementById('attacks-container');
-    attacksContainer.innerHTML = '';
+    attacksContainer.innerHTML = Array.from({length: attackCount}, (_, i) => createAttackInput(i)).join('');
 
-    for (let i = 0; i < attackCount; i++) {
-        let copyButton = '';
-        if (i > 0) {
-            copyButton = `<button type="button" class="copy-previous-button" data-attack-index="${i}">Sao chép từ đòn trước</button>`;
-        }
-
-        attacksContainer.innerHTML += `
-            <div class="attack-input" id="attack-${i}">
-                <h3>Đòn tấn công ${i + 1}</h3>
-                ${copyButton}
-                <label for="power-${i}">Sát thương (Pow):</label>
-                <input type="number" id="power-${i}" class="power-input" min="0" required placeholder="Nhập chỉ số Pow sau khi tính qua buff và debuff.">
-                
-                <label for="buff-count-${i}">Số lượng buff sát thương:</label>
-                <input type="number" id="buff-count-${i}" class="buff-count-input" value="0" min="0">
-                <div id="buff-inputs-${i}" class="buff-inputs"></div>
-                
-                <label for="debuff-count-${i}">Số lượng debuff giảm sát thương:</label>
-                <input type="number" id="debuff-count-${i}" class="debuff-count-input" value="0" min="0">
-                <div id="debuff-inputs-${i}" class="debuff-inputs"></div>
-                
-                <label>
-                    <input type="checkbox" id="true-damage-${i}" class="effect-checkbox"> True Damage
-                </label>
-                <label>
-                    <input type="checkbox" id="piercing-${i}" class="effect-checkbox"> Piercing
-                </label>
-            </div>
-        `;
-    }
-
-    // Add event listeners for buff and debuff count inputs
-    document.querySelectorAll('.buff-count-input').forEach(input => {
-        input.addEventListener('input', function() {
-            updateBuffDebuffInputs(this, 'buff', 'attack');
+    ['buff', 'debuff'].forEach(type => {
+        document.querySelectorAll(`.${type}-count-input`).forEach(input => {
+            input.addEventListener('input', e => updateBuffDebuffInputs(e.target, type, 'attack'));
         });
     });
 
-    document.querySelectorAll('.debuff-count-input').forEach(input => {
-        input.addEventListener('input', function() {
-            updateBuffDebuffInputs(this, 'debuff', 'attack');
-        });
-    });
-
-    // Add event listeners for copy buttons
     document.querySelectorAll('.copy-previous-button').forEach(button => {
         button.addEventListener('click', copyPreviousAttack);
     });
@@ -90,91 +63,120 @@ function updateAttackInputs() {
     calculateDamageDealt();
 }
 
+function createAttackInput(index) {
+    const copyButton = index > 0 ? `<button type="button" class="copy-previous-button" data-attack-index="${index}">Sao chép từ đòn trước</button>` : '';
+    return `
+        <div class="attack-input" id="attack-${index}">
+            <h3>Đòn tấn công ${index + 1}</h3>
+            ${copyButton}
+            <label for="power-${index}">Sát thương (Pow):</label>
+            <input type="number" id="power-${index}" class="power-input" min="0" required placeholder="Nhập chỉ số Pow sau khi tính qua buff và debuff.">
+            
+            <label for="buff-count-${index}">Số lượng buff sát thương:</label>
+            <input type="number" id="buff-count-${index}" class="buff-count-input" value="0" min="0">
+            <div id="buff-inputs-${index}" class="buff-inputs"></div>
+            
+            <label for="debuff-count-${index}">Số lượng debuff giảm sát thương:</label>
+            <input type="number" id="debuff-count-${index}" class="debuff-count-input" value="0" min="0">
+            <div id="debuff-inputs-${index}" class="debuff-inputs"></div>
+            
+            <label>
+                <input type="checkbox" id="true-damage-${index}" class="effect-checkbox"> True Damage
+            </label>
+            <label>
+                <input type="checkbox" id="piercing-${index}" class="effect-checkbox"> Piercing
+            </label>
+        </div>
+    `;
+}
+
 function updateBuffDebuffInputs(countInput, type, context) {
     const count = parseInt(countInput.value) || 0;
     const container = countInput.nextElementSibling;
-    container.innerHTML = '';
+    container.innerHTML = Array.from({length: count}, (_, i) => createBuffDebuffInput(type, i)).join('');
 
-    for (let i = 0; i < count; i++) {
-        const label = type === 'buff' ? `Buff chỉ số ${i + 1}` : `Debuff chỉ số ${i + 1}`;
-        container.innerHTML += `
-            <label for="${type}-${countInput.id}-${i}">${label} (%):</label>
-            <input type="number" id="${type}-${countInput.id}-${i}" class="${type}-input" min="0" max="100" required placeholder="Nhập giá trị của ${type === 'buff' ? 'buff' : 'debuff'}">
-        `;
-    }
+    container.querySelectorAll(`.${type}-input`).forEach(input => {
+        input.addEventListener('input', () => context === 'attack' && calculateDamageDealt());
+    });
 
-    if (context === 'stat-calc') {
-        calculateStats();
-    } else if (context === 'attack') {
-        calculateDamageDealt();
-    }
+    if (context === 'attack') calculateDamageDealt();
 }
 
 function copyPreviousAttack(event) {
     const currentIndex = parseInt(event.target.getAttribute('data-attack-index'));
     const previousIndex = currentIndex - 1;
 
-    // Copy power
-    document.getElementById(`power-${currentIndex}`).value = document.getElementById(`power-${previousIndex}`).value;
+    ['power', 'buff-count', 'debuff-count', 'true-damage', 'piercing'].forEach(field => {
+        const currentElement = document.getElementById(`${field}-${currentIndex}`);
+        const previousElement = document.getElementById(`${field}-${previousIndex}`);
+        if (currentElement.type === 'checkbox') {
+            currentElement.checked = previousElement.checked;
+        } else {
+            currentElement.value = previousElement.value;
+        }
+    });
 
-    // Copy buff count and values
-    const buffCount = document.getElementById(`buff-count-${previousIndex}`).value;
-    document.getElementById(`buff-count-${currentIndex}`).value = buffCount;
-    updateBuffDebuffInputs(document.getElementById(`buff-count-${currentIndex}`), 'buff', 'attack');
-    for (let i = 0; i < buffCount; i++) {
-        document.getElementById(`buff-buff-count-${currentIndex}-${i}`).value = document.getElementById(`buff-buff-count-${previousIndex}-${i}`).value;
-    }
+    ['buff', 'debuff'].forEach(type => {
+        updateBuffDebuffInputs(document.getElementById(`${type}-count-${currentIndex}`), type, 'attack');
+        const count = parseInt(document.getElementById(`${type}-count-${previousIndex}`).value) || 0;
+        for (let i = 0; i < count; i++) {
+            const prevValue = document.getElementById(`${type}-${type}-count-${previousIndex}-${i}`).value;
+            document.getElementById(`${type}-${type}-count-${currentIndex}-${i}`).value = prevValue;
+        }
+    });
 
-    // Copy debuff count and values
-    const debuffCount = document.getElementById(`debuff-count-${previousIndex}`).value;
-    document.getElementById(`debuff-count-${currentIndex}`).value = debuffCount;
-    updateBuffDebuffInputs(document.getElementById(`debuff-count-${currentIndex}`), 'debuff', 'attack');
-    for (let i = 0; i < debuffCount; i++) {
-        document.getElementById(`debuff-debuff-count-${currentIndex}-${i}`).value = document.getElementById(`debuff-debuff-count-${previousIndex}-${i}`).value;
-    }
-
-    // Copy checkboxes
-    document.getElementById(`true-damage-${currentIndex}`).checked = document.getElementById(`true-damage-${previousIndex}`).checked;
-    document.getElementById(`piercing-${currentIndex}`).checked = document.getElementById(`piercing-${previousIndex}`).checked;
-
-    // Recalculate damage
     calculateDamageDealt();
 }
 
 function calculateStats() {
     const baseStat = parseFloat(document.getElementById('base-stat').value) || 0;
-    
-    const buffInputs = document.querySelectorAll('#buff-inputs .buff-input');
-    let totalBuff = 0;
-    let buffDetails = [];
-    buffInputs.forEach((input, index) => {
-        const buffValue = parseFloat(input.value) || 0;
-        if (buffValue !== 0) {
-            totalBuff += buffValue;
-            buffDetails.push(`Buff sát thương ${index + 1}: ${buffValue}%`);
-        }
-    });
-
-    const debuffInputs = document.querySelectorAll('#debuff-inputs .debuff-input');
-    let totalDebuff = 1;
-    let debuffDetails = [];
-    debuffInputs.forEach((input, index) => {
-        const debuffValue = parseFloat(input.value) || 0;
-        if (debuffValue !== 0) {
-            totalDebuff *= (100 - debuffValue) / 100;
-            debuffDetails.push(`Debuff giảm sát thương ${index + 1}: ${debuffValue}%`);
-        }
-    });
+    const { total: totalBuff, details: buffDetails } = calculateBuffDebuff('#buff-inputs .buff-input', 'Buff chỉ số');
+    const { total: totalDebuff, details: debuffDetails } = calculateBuffDebuff('#debuff-inputs .debuff-input', 'Debuff chỉ số', true);
 
     const finalStat = baseStat * (1 + totalBuff / 100) * totalDebuff;
 
-    const resultElement = document.getElementById('stat-calc-result');
-    resultElement.innerHTML = `
+    document.getElementById('stat-calc-result').innerHTML = `
         <p>Base Stat: ${baseStat}</p>
         <p>Tổng buff: ${buffDetails.length > 0 ? buffDetails.join(' + ') : '0%'} = <span style="color: red;">${totalBuff}%</span></p>
         <p>Tổng debuff: 1 - ${debuffDetails.length > 0 ? debuffDetails.join(' * ') : '100'}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
         <p><strong>Stat cuối cùng: ${finalStat.toFixed(2)}</strong></p>
     `;
+}
+
+function calculateBuffDebuff(selector, label, isDebuff = false) {
+    const inputs = document.querySelectorAll(selector);
+    let total = isDebuff ? 1 : 0;
+    const details = [];
+    inputs.forEach((input, index) => {
+        const value = parseFloat(input.value) || 0;
+        if (value !== 0) {
+            if (isDebuff) {
+                total *= (100 - value) / 100;
+            } else {
+                total += value;
+            }
+            details.push(`${label} ${index + 1}: ${value}%`);
+        }
+    });
+    return { total: isDebuff ? total : total, details };
+}
+
+function calculateBuffDebuff(selector, label, isDebuff = false) {
+    const inputs = document.querySelectorAll(selector);
+    let total = isDebuff ? 1 : 0;
+    const details = [];
+    inputs.forEach((input, index) => {
+        const value = parseFloat(input.value) || 0;
+        if (value !== 0) {
+            if (isDebuff) {
+                total *= (100 - value) / 100;
+            } else {
+                total += value;
+            }
+            details.push(`${label} ${index + 1}: ${value}%`);
+        }
+    });
+    return { total: isDebuff ? total : total, details };
 }
 
 function calculateDamageDealt() {
@@ -183,58 +185,41 @@ function calculateDamageDealt() {
     let attackSummary = [];
 
     for (let i = 0; i < attackCount; i++) {
-        const power = parseFloat(document.getElementById(`power-${i}`).value) || 0;
-        
-        // Calculate buff
-        const buffInputs = document.querySelectorAll(`#buff-inputs-${i} .buff-input`);
-        let totalBuff = 0;
-        buffInputs.forEach(input => {
-            totalBuff += parseFloat(input.value) || 0;
-        });
-
-        // Calculate debuff
-        const debuffInputs = document.querySelectorAll(`#debuff-inputs-${i} .debuff-input`);
-        let totalDebuff = 1;
-        debuffInputs.forEach(input => {
-            const debuffValue = parseFloat(input.value) || 0;
-            totalDebuff *= (100 - debuffValue) / 100;
-        });
-
-        const damage = power * (1 + totalBuff / 100) * totalDebuff;
-
-        const trueDamage = document.getElementById(`true-damage-${i}`).checked;
-        const piercing = document.getElementById(`piercing-${i}`).checked;
-
-        // Add to attack summary
-        let effects = [];
-        if (trueDamage) effects.push('true damage');
-        if (piercing) effects.push('piercing');
-        let summaryText = `Đòn tấn công ${i + 1}: ${damage.toFixed(2)}`;
-        if (effects.length > 0) {
-            summaryText += `, có hiệu ứng ${effects.join(', ')}`;
-        }
-        attackSummary.push(summaryText);
-
-        // Add details
-        damageDetails.push(`
-            <h4>Đòn tấn công ${i + 1}:</h4>
-            <p>Sát thương cơ bản: ${power}</p>
-            <p>Tổng buff sát thương: ${totalBuff}% = <span style="color: red;">${totalBuff}%</span></p>
-            <p>Tổng debuff giảm sát thương: 1 - ${((1 - totalDebuff) * 100).toFixed(2)}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
-            <p>Sát thương cuối cùng: <strong>${damage.toFixed(2)}</strong></p>
-            <p>Hiệu ứng: ${effects.length > 0 ? effects.join(', ') : 'Không có'}</p>
-        `);
+        const { damage, effects, details } = calculateSingleAttack(i);
+        attackSummary.push(`Đòn tấn công ${i + 1}: ${damage.toFixed(2)}${effects.length > 0 ? `, có hiệu ứng ${effects.join(', ')}` : ''}`);
+        damageDetails.push(details);
     }
 
-    const resultElement = document.getElementById('damage-dealt-result');
-    resultElement.innerHTML = `
+    document.getElementById('damage-dealt-result').innerHTML = `
         <h3>Tóm tắt sát thương:</h3>
-        <ul>
-            ${attackSummary.map(summary => `<li>${summary}</li>`).join('')}
-        </ul>
+        <ul>${attackSummary.map(summary => `<li>${summary}</li>`).join('')}</ul>
         <h3>Chi tiết tính toán:</h3>
         ${damageDetails.join('<hr>')}
     `;
+}
+
+function calculateSingleAttack(index) {
+    const power = parseFloat(document.getElementById(`power-${index}`).value) || 0;
+    const { total: totalBuff } = calculateBuffDebuff(`#buff-inputs-${index} .buff-input`);
+    const { total: totalDebuff } = calculateBuffDebuff(`#debuff-inputs-${index} .debuff-input`, '', true);
+
+    const damage = power * (1 + totalBuff / 100) * totalDebuff;
+
+    const trueDamage = document.getElementById(`true-damage-${index}`).checked;
+    const piercing = document.getElementById(`piercing-${index}`).checked;
+
+    const effects = [trueDamage && 'true damage', piercing && 'piercing'].filter(Boolean);
+
+    const details = `
+        <h4>Đòn tấn công ${index + 1}:</h4>
+        <p>Sát thương cơ bản: ${power}</p>
+        <p>Tổng buff sát thương: ${totalBuff}% = <span style="color: red;">${totalBuff}%</span></p>
+        <p>Tổng debuff giảm sát thương: 1 - ${((1 - totalDebuff) * 100).toFixed(2)}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
+        <p>Sát thương cuối cùng: <strong>${damage.toFixed(2)}</strong></p>
+        <p>Hiệu ứng: ${effects.length > 0 ? effects.join(', ') : 'Không có'}</p>
+    `;
+
+    return { damage, effects, details };
 }
 
 function calculateDamageReceived() {
@@ -245,8 +230,7 @@ function calculateDamageReceived() {
     const actualDamage = Math.max(0, incomingDamage - defenderShielding);
     const remainingHp = Math.max(0, defenderHp - actualDamage);
 
-    const resultElement = document.getElementById('damage-received-result');
-    resultElement.innerHTML = `
+    document.getElementById('damage-received-result').innerHTML = `
         <p>Sát thương thực tế nhận vào: ${actualDamage}</p>
         <p>HP còn lại: ${remainingHp}</p>
     `;
