@@ -9,7 +9,9 @@ body {
     font-family: 'Roboto', Arial, sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f4f4f4;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -20,7 +22,66 @@ body {
 
 h1, h2 {
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #1a73e8;
+}
+
+/* Header và footer */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 2.5em;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #5f6368;
+}
+
+/* Tool menu (trang chủ) */
+.tool-menu {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.tool-item {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 30px;
+    width: 300px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.tool-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.tool-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.tool-icon {
+    font-size: 3rem;
+    color: #1a73e8;
+    margin-bottom: 20px;
+}
+
+.tool-item h2 {
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.tool-item p {
+    color: #5f6368;
 }
 
 /* Styles cho bản đồ */
@@ -40,6 +101,8 @@ h1, h2 {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
 }
 
 /* Layout cho phần điều khiển */
@@ -49,13 +112,14 @@ h1, h2 {
     gap: 20px;
 }
 
-.input-card {
+.input-card, .card {
     flex: 1;
     min-width: 300px;
     background-color: #fff;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
 /* Styles cho form */
@@ -64,9 +128,8 @@ h1, h2 {
 }
 
 label {
-    display: inline-block;
-    width: 80px;
-    margin-right: 10px;
+    display: block;
+    margin-bottom: 5px;
     font-weight: bold;
     color: #34495e;
 }
@@ -74,15 +137,11 @@ label {
 input[type="text"],
 input[type="number"],
 select {
-    width: calc(100% - 95px);
-    padding: 8px;
+    width: 100%;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-input[type="number"] {
-    width: calc(50% - 45px);
+    font-size: 16px;
 }
 
 .btn-primary,
@@ -91,17 +150,17 @@ input[type="number"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     transition: background-color 0.3s;
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background-color: #1a73e8;
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
+    background-color: #1557b0;
 }
 
 .btn-secondary {
@@ -140,15 +199,24 @@ input[type="number"] {
     border-radius: 4px;
 }
 
-.friendly-fire-alert {
-    background-color: #ffcccc;
-    border: 2px solid #ff0000;
-    color: #ff0000;
+.friendly-fire-alert, .enemy-buff-alert {
     padding: 15px;
     margin-top: 15px;
     border-radius: 4px;
     font-weight: bold;
     animation: blink 1s infinite;
+}
+
+.friendly-fire-alert {
+    background-color: #ffcccc;
+    border: 2px solid #ff0000;
+    color: #ff0000;
+}
+
+.enemy-buff-alert {
+    background-color: #fff3cd;
+    border: 2px solid #ffeeba;
+    color: #856404;
 }
 
 @keyframes blink {
@@ -157,45 +225,54 @@ input[type="number"] {
     100% { opacity: 1; }
 }
 
+/* Nút quay về trang chủ */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #1a73e8;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #1557b0;
+}
+
+.back-button i {
+    margin-right: 8px;
+}
+
+/* Styles cho Profile Assist Tool */
+#stat-summary {
+    margin-bottom: 20px;
+}
+
+.highlight {
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .control-section {
         flex-direction: column;
     }
 
-    .input-card {
+    .input-card, .tool-item {
         width: 100%;
     }
 
     input[type="number"] {
-        width: calc(100% - 95px);
+        width: 100%;
     }
-}
-
-/* Nút xóa dữ liệu */
-#clearData {
-    margin-top: 20px;
-    background-color: #95a5a6;
-    color: white;
-}
-
-#clearData:hover {
-    background-color: #7f8c8d;
-}
-
-/* Cải thiện khả năng đọc cho các số trên bản đồ */
-#mapCanvas {
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-}
-
-.enemy-buff-alert {
-    background-color: #fff3cd;
-    border: 2px solid #ffeeba;
-    color: #856404;
-    padding: 15px;
-    margin-top: 15px;
-    border-radius: 4px;
-    font-weight: bold;
-    animation: blink 1s infinite;
 }
