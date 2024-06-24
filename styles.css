@@ -276,3 +276,36 @@ select {
         width: 100%;
     }
 }
+
+.map-layout {
+    display: flex;
+    gap: 20px;
+}
+
+.column {
+    flex: 1;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-row button {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .map-layout {
+        flex-direction: column;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+}
