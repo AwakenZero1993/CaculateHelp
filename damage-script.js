@@ -180,6 +180,7 @@ function calculateStats() {
 function calculateDamageDealt() {
     const attackCount = parseInt(document.getElementById('attack-count').value) || 1;
     let damageDetails = [];
+    let attackSummary = [];
 
     for (let i = 0; i < attackCount; i++) {
         const power = parseFloat(document.getElementById(`power-${i}`).value) || 0;
@@ -187,25 +188,16 @@ function calculateDamageDealt() {
         // Calculate buff
         const buffInputs = document.querySelectorAll(`#buff-inputs-${i} .buff-input`);
         let totalBuff = 0;
-        let buffDetails = [];
-        buffInputs.forEach((input, index) => {
-            const buffValue = parseFloat(input.value) || 0;
-            if (buffValue !== 0) {
-                totalBuff += buffValue;
-                buffDetails.push(`${buffValue}%`);
-            }
+        buffInputs.forEach(input => {
+            totalBuff += parseFloat(input.value) || 0;
         });
 
         // Calculate debuff
         const debuffInputs = document.querySelectorAll(`#debuff-inputs-${i} .debuff-input`);
         let totalDebuff = 1;
-        let debuffDetails = [];
-        debuffInputs.forEach((input, index) => {
+        debuffInputs.forEach(input => {
             const debuffValue = parseFloat(input.value) || 0;
-            if (debuffValue !== 0) {
-                totalDebuff *= (100 - debuffValue) / 100;
-                debuffDetails.push(`${debuffValue}%`);
-            }
+            totalDebuff *= (100 - debuffValue) / 100;
         });
 
         const damage = power * (1 + totalBuff / 100) * totalDebuff;
@@ -213,19 +205,34 @@ function calculateDamageDealt() {
         const trueDamage = document.getElementById(`true-damage-${i}`).checked;
         const piercing = document.getElementById(`piercing-${i}`).checked;
 
+        // Add to attack summary
+        let effects = [];
+        if (trueDamage) effects.push('true damage');
+        if (piercing) effects.push('piercing');
+        let summaryText = `Đòn tấn công ${i + 1}: ${damage.toFixed(2)}`;
+        if (effects.length > 0) {
+            summaryText += `, có hiệu ứng ${effects.join(', ')}`;
+        }
+        attackSummary.push(summaryText);
+
+        // Add details
         damageDetails.push(`
-            <p><strong>Đòn tấn công ${i + 1}:</strong></p>
+            <h4>Đòn tấn công ${i + 1}:</h4>
             <p>Sát thương cơ bản: ${power}</p>
-            <p>Tổng buff sát thương: ${buffDetails.length > 0 ? buffDetails.join(' + ') : '0%'} = <span style="color: red;">${totalBuff}%</span></p>
-            <p>Tổng debuff giảm sát thương: 1 - ${debuffDetails.length > 0 ? debuffDetails.join(' * ') : '100'}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
+            <p>Tổng buff sát thương: ${totalBuff}% = <span style="color: red;">${totalBuff}%</span></p>
+            <p>Tổng debuff giảm sát thương: 1 - ${((1 - totalDebuff) * 100).toFixed(2)}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
             <p>Sát thương cuối cùng: <strong>${damage.toFixed(2)}</strong></p>
-            <p>Hiệu ứng: ${trueDamage ? 'True Damage, ' : ''}${piercing ? 'Piercing' : ''}</p>
+            <p>Hiệu ứng: ${effects.length > 0 ? effects.join(', ') : 'Không có'}</p>
         `);
     }
 
     const resultElement = document.getElementById('damage-dealt-result');
     resultElement.innerHTML = `
-        <h3>Kết quả tính sát thương:</h3>
+        <h3>Tóm tắt sát thương:</h3>
+        <ul>
+            ${attackSummary.map(summary => `<li>${summary}</li>`).join('')}
+        </ul>
+        <h3>Chi tiết tính toán:</h3>
         ${damageDetails.join('<hr>')}
     `;
 }
