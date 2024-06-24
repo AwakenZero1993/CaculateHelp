@@ -113,3 +113,30 @@ button:hover {
     margin-right: 5px;
 }
 
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 10px 0;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+/* Để nút Back ở đầu trang nằm bên trái */
+.container > .back-button:first-of-type {
+    align-self: flex-start;
+}
+
+/* Để nút Back ở cuối trang nằm ở giữa */
+.container > .back-button:last-of-type {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}

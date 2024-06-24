@@ -110,3 +110,31 @@ button:hover {
 .effect-checkbox {
     margin-right: 5px;
 }
+
+/* Styles mới thêm vào */
+.input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.input-message {
+    display: block;
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 2px;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #45a049;
+}
