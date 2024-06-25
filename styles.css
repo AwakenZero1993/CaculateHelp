@@ -309,3 +309,63 @@ select {
         flex-direction: column;
     }
 }
+
+#affinity-error {
+    color: #d32f2f;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+#input-values {
+    margin-top: 20px;
+}
+
+#copy-values {
+    margin-top: 20px;
+    display: none;
+}
+
+.success-message {
+    color: #4caf50;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.affinity-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.affinity-input label {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.affinity-input input {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.affinity-description {
+    flex: 1;
+    font-size: 0.9em;
+    color: #666;
+}
+
+#affinity-error {
+    color: #d32f2f;
+    font-size: 0.9em;
+    margin-top: 10px;
+    display: block;
+}
+
+const elementColors = {
+    force: '#8A2BE2',  // BlueViolet
+    flame: '#FF4500',  // OrangeRed
+    aqua: '#1E90FF',   // DodgerBlue
+    gale: '#32CD32',   // LimeGreen
+    terra: '#8B4513',  // SaddleBrown
+    holy: '#FFD700',   // Gold
+    shadow: '#4B0082'  // Indigo
+};

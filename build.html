@@ -69,15 +69,63 @@
                 </div>
             </form>
 
-            <div id="input-values" class="card">
-                <h2>Profile Summary</h2>
-                <p>Base stat: <span id="input-total" class="highlight"></span></p>
-                <p>HP: <span id="input-hp" class="highlight"></span></p>
-                <p>Pow: <span id="input-power" class="highlight"></span></p>
-                <p>Spd: <span id="input-speed" class="highlight"></span></p>
-                <p>Shd: <span id="input-shielding" class="highlight"></span></p>
-                <p>Rec: <span id="input-recovery" class="highlight"></span></p>
+            <div id="elemental-affinity" class="card">
+                <h2>Element Affinity</h2>
+                <p>Tổng Affinity còn lại: <span id="remaining-affinity">0</span></p>
+                <div id="affinity-inputs">
+                    <div class="affinity-input">
+                        <label for="force-affinity">Force:</label>
+                        <input type="number" id="force-affinity" name="force-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="force-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="flame-affinity">Flame:</label>
+                        <input type="number" id="flame-affinity" name="flame-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="flame-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="aqua-affinity">Aqua:</label>
+                        <input type="number" id="aqua-affinity" name="aqua-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="aqua-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="gale-affinity">Gale:</label>
+                        <input type="number" id="gale-affinity" name="gale-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="gale-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="terra-affinity">Terra:</label>
+                        <input type="number" id="terra-affinity" name="terra-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="terra-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="holy-affinity">Holy:</label>
+                        <input type="number" id="holy-affinity" name="holy-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="holy-description"></span>
+                    </div>
+                    <div class="affinity-input">
+                        <label for="shadow-affinity">Shadow:</label>
+                        <input type="number" id="shadow-affinity" name="shadow-affinity" value="1" step="0.1">
+                        <span class="affinity-description" id="shadow-description"></span>
+                    </div>
+                </div>
+                <span id="affinity-error" class="error-message"></span>
             </div>
+
+<div id="input-values" class="card">
+    <h2>Profile Summary</h2>
+    <p>Base stat: <span id="input-total" class="highlight"></span></p>
+    <p>HP: <span id="input-hp" class="highlight"></span></p>
+    <p>Pow: <span id="input-power" class="highlight"></span></p>
+    <p>Spd: <span id="input-speed" class="highlight"></span></p>
+    <p>Shd: <span id="input-shielding" class="highlight"></span></p>
+    <p>Rec: <span id="input-recovery" class="highlight"></span></p>
+    <p>Phạm vi dùng skill và tấn công tối đa (Range Limit): <span id="input-range-limit" class="highlight"></span> đơn vị</p>
+    <p>Giới hạn healing mỗi turn (Healing Limit): <span id="input-healing-limit" class="highlight"></span> / turn</p>
+	<br>
+    <h3>Elemental Affinity</h3>
+    <div id="affinity-summary"></div>
+</div>
 
             <button id="copy-values" class="btn-primary"><i class="fas fa-copy"></i> Copy Profile</button>
             <div id="success-message"></div>
@@ -90,3 +138,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
