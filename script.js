@@ -36,11 +36,16 @@ const updateStatInputs = function() {
         remainingTotal.textContent = formatNumber(total);
 
         const requiredHp = formatNumber(total * STAT_CONSTANTS.MIN_HP_RATIO);
-        hpInput.placeholder = `Min HP = ${requiredHp}`;
+        hpInput.placeholder = `Yêu cầu HP thấp nhất = ${requiredHp}`;
 
         const minSpeed = formatNumber(total * STAT_CONSTANTS.MIN_SPEED_RATIO);
         const maxSpeed = formatNumber(total * STAT_CONSTANTS.MAX_SPEED_RATIO);
-        speedInput.placeholder = `Speed range: ${minSpeed} - ${maxSpeed}`;
+        speedInput.placeholder = `Speed nằm trong khoảng: ${minSpeed} - ${maxSpeed}`;
+
+        // Thêm placeholder cho các ô nhập liệu khác
+        document.getElementById('power').placeholder = 'Nhập Power cho nhân vật';
+        document.getElementById('shielding').placeholder = 'Nhập giá trị ShD cho nhân vật, thường Shielder dùng stat này';
+        document.getElementById('recovery').placeholder = 'Nhập giá trị Rec cho nhân vật, thường Healer dùng stat này';
     } else {
         statInputs.style.display = 'none';
         statSummary.style.display = 'none';
@@ -66,12 +71,10 @@ const validateStats = event => {
     let isValid = true;
     let errorMessage = '';
 
-    // Xóa tất cả các thông báo lỗi
     ['hp', 'power', 'speed', 'shielding', 'recovery', 'total'].forEach(id => {
         displayError(`${id}-error`, '');
     });
 
-    // Kiểm tra HP
     const requiredHp = total * STAT_CONSTANTS.MIN_HP_RATIO;
     if (hp < requiredHp) {
         errorMessage = `HP must be at least ${formatNumber(requiredHp)}.`;
@@ -79,7 +82,6 @@ const validateStats = event => {
         isValid = false;
     }
 
-    // Kiểm tra Speed
     const minSpeed = total * STAT_CONSTANTS.MIN_SPEED_RATIO;
     const maxSpeed = total * STAT_CONSTANTS.MAX_SPEED_RATIO;
     if (speed < minSpeed || speed > maxSpeed) {
@@ -101,7 +103,6 @@ const validateStats = event => {
 
     updateInputValues(total, hp, power, speed, shielding, recovery);
 
-    // Kiểm tra điều kiện để hiển thị nút Copy và Input Values
     const showCopyAndValues = isValid && (remainingStat === 0) && (total > 0);
     document.getElementById('copy-values').style.display = showCopyAndValues ? 'block' : 'none';
     document.getElementById('input-values').style.display = showCopyAndValues ? 'block' : 'none';
@@ -134,7 +135,10 @@ const copyValues = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('total').addEventListener('input', updateStatInputs);
+    const totalInput = document.getElementById('total');
+    totalInput.addEventListener('input', updateStatInputs);
+    totalInput.placeholder = "Thường giá trị là 200 cho đa số thành viên đăng ký mới.";
+
     ['hp', 'power', 'speed', 'shielding', 'recovery'].forEach(id => {
         document.getElementById(id).addEventListener('input', validateStats);
     });
@@ -145,4 +149,3 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('input-values').style.display = 'none';
     document.getElementById('copy-values').style.display = 'none';
 });
-

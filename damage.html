@@ -20,65 +20,44 @@
         <header>
             <h1><i class="fas fa-calculator"></i> Công cụ tính toán sát thương</h1>
         </header>
-        <main>
+        
+        <main class="main-content">
             <div class="section">
-                <h2 class="section-title" onclick="toggleSection('stat-calc')">
+                <h2 class="section-title" aria-controls="stat-calc" aria-expanded="false">
                     <i class="fas fa-chart-bar"></i> 1. Hỗ trợ tính toán stat
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </h2>
-                <div id="stat-calc" class="section-content card" style="display: none;">
+                <div id="stat-calc" class="section-content" style="display: none;">
                     <form id="stat-calc-form">
-                        <div class="form-group">
-                            <label for="base-stat">Base Stat:</label>
-                            <input type="number" id="base-stat" required placeholder="Nhập chỉ số cơ bản">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="buff-count">Số lượng buff chỉ số bạn đang có:</label>
-                            <input type="number" id="buff-count" value="0" min="0" placeholder="Nhập số lượng buff">
-                        </div>
-                        
-                        <div id="buff-inputs"></div>
-                        
-                        <div class="form-group">
-                            <label for="debuff-count">Số lượng debuff chỉ số bạn đang có:</label>
-                            <input type="number" id="debuff-count" value="0" min="0" placeholder="Nhập số lượng debuff">
-                        </div>
-                        
-                        <div id="debuff-inputs"></div>
+                        <!-- Nội dung form sẽ được tạo động bởi JavaScript -->
                     </form>
-                    <div id="stat-calc-result" class="result-box"></div>
+                    <div id="stat-calc-result" class="result-box" style="display: none;"></div>
                 </div>
             </div>
 
             <div class="section">
-                <h2 class="section-title" onclick="toggleSection('damage-dealt')">
+                <h2 class="section-title" aria-controls="damage-dealt" aria-expanded="false">
                     <i class="fas fa-fist-raised"></i> 2. Hỗ trợ tính sát thương gây ra
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </h2>
-                <div id="damage-dealt" class="section-content card" style="display: none;">
+                <div id="damage-dealt" class="section-content" style="display: none;">
                     <form id="damage-dealt-form">
-                        <div class="form-group">
-                            <label for="attack-count">Số lượng đòn tấn công:</label>
-                            <input type="number" id="attack-count" min="1" value="1" required>
-                        </div>
-                        
-                        <div id="attacks-container"></div>
+                        <!-- Nội dung form sẽ được tạo động bởi JavaScript -->
                     </form>
-                    <div id="damage-dealt-result" class="result-box"></div>
+                    <div id="damage-dealt-result" class="result-box" style="display: none;"></div>
                 </div>
             </div>
             
             <div class="section">
-                <h2 class="section-title" onclick="toggleSection('damage-received')">
+                <h2 class="section-title" aria-controls="damage-received" aria-expanded="false">
                     <i class="fas fa-shield-alt"></i> 3. Hỗ trợ tính sát thương nhận vào
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </h2>
-                <div id="damage-received" class="section-content card" style="display: none;">
+                <div id="damage-received" class="section-content" style="display: none;">
                     <form id="damage-received-form">
                         <!-- Nội dung form sẽ được tạo động bởi JavaScript -->
                     </form>
-                    <div id="damage-received-result" class="result-box"></div>
+                    <div id="calculation-result" class="result-box" style="display: none;"></div>
                 </div>
             </div>
         </main>
@@ -87,7 +66,7 @@
             <p>&copy; 2024 Công cụ tính toán sát thương. All rights reserved.</p>
         </footer>
     </div>
-    <script src="damage-script.js"></script>
     <script src="damage-received-script.js"></script>
+    <script src="damage-script.js"></script>
 </body>
 </html>

@@ -1,29 +1,122 @@
-document.addEventListener('DOMContentLoaded', initializeApp);
+document.addEventListener('DOMContentLoaded', function() {
+    setupEventListeners();
+    setupStatCalcForm();
+    setupDamageDealtForm();
+    setupDamageReceivedForm();
+});
 
-function initializeApp() {
-    const forms = {
-        statCalc: document.getElementById('stat-calc-form'),
-        damageDealt: document.getElementById('damage-dealt-form'),
-        damageReceived: document.getElementById('damage-received-form')
-    };
-
-    forms.statCalc.addEventListener('input', calculateStats);
-    forms.damageDealt.addEventListener('input', calculateDamageDealt);
-    forms.damageReceived.addEventListener('input', calculateDamageReceived);
-
-    ['buff', 'debuff'].forEach(type => {
-		    document.getElementById('stat-calc-form').addEventListener('input', calculateStats);
-        document.getElementById(`${type}-count`).addEventListener('input', e => updateStatBuffDebuffInputs(e.target, type));
+function setupEventListeners() {
+    document.querySelectorAll('.section-title').forEach(title => {
+        title.addEventListener('click', function() {
+            const sectionId = this.getAttribute('aria-controls');
+            toggleSection(sectionId);
+        });
     });
-
-    document.getElementById('attack-count').addEventListener('input', updateAttackInputs);
-
-    updateAttackInputs();
 }
 
 function toggleSection(sectionId) {
-    const sections = document.querySelectorAll('.section-content');
-    sections.forEach(s => s.style.display = s.id === sectionId ? (s.style.display === 'none' ? 'block' : 'none') : 'none');
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const isExpanded = section.style.display !== 'none';
+        section.style.display = isExpanded ? 'none' : 'block';
+        const title = document.querySelector(`[aria-controls="${sectionId}"]`);
+        if (title) {
+            title.setAttribute('aria-expanded', !isExpanded);
+            const icon = title.querySelector('.toggle-icon');
+            if (icon) {
+                icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        }
+        
+        // Hiển thị hoặc ẩn kết quả tương ứng
+        const resultId = getResultId(sectionId);
+        const resultElement = document.getElementById(resultId);
+        if (resultElement) {
+            resultElement.style.display = isExpanded ? 'none' : 'block';
+        }
+        
+        // Tính toán kết quả khi mở phần
+        if (!isExpanded) {
+            switch (sectionId) {
+                case 'stat-calc':
+                    calculateStats();
+                    break;
+                case 'damage-dealt':
+                    calculateDamageDealt();
+                    break;
+                case 'damage-received':
+                    calculateDamageReceived();
+                    break;
+            }
+        }
+        
+        console.log(`Toggled section ${sectionId}. New display: ${section.style.display}`);
+    } else {
+        console.error(`Section with id ${sectionId} not found`);
+    }
+}
+
+function getResultId(sectionId) {
+    switch (sectionId) {
+        case 'stat-calc':
+            return 'stat-calc-result';
+        case 'damage-dealt':
+            return 'damage-dealt-result';
+        case 'damage-received':
+            return 'calculation-result';
+        default:
+            return '';
+    }
+}
+
+function setupStatCalcForm() {
+    const form = document.getElementById('stat-calc-form');
+    if (!form) return;
+
+    form.innerHTML = `
+        <div class="form-group">
+            <label for="base-stat">Base Stat:</label>
+            <input type="number" id="base-stat" required placeholder="Nhập chỉ số cơ bản">
+        </div>
+        
+        <div class="form-group">
+            <label for="buff-count">Số lượng buff:</label>
+            <input type="number" id="buff-count" value="0" min="0" placeholder="Số buff">
+        </div>
+        
+        <div id="buff-inputs"></div>
+        
+        <div class="form-group">
+            <label for="debuff-count">Số lượng debuff:</label>
+            <input type="number" id="debuff-count" value="0" min="0" placeholder="Số debuff">
+        </div>
+        
+        <div id="debuff-inputs"></div>
+    `;
+
+    form.addEventListener('input', calculateStats);
+    document.getElementById('buff-count').addEventListener('input', e => updateStatBuffDebuffInputs(e.target, 'buff'));
+    document.getElementById('debuff-count').addEventListener('input', e => updateStatBuffDebuffInputs(e.target, 'debuff'));
+}
+
+function setupDamageDealtForm() {
+    const form = document.getElementById('damage-dealt-form');
+    if (!form) return;
+
+    form.innerHTML = `
+        <div class="form-group">
+            <label for="attack-count">Số lượng đòn tấn công:</label>
+            <input type="number" id="attack-count" min="1" value="1" required>
+        </div>
+        
+        <div id="attacks-container"></div>
+    `;
+
+    form.addEventListener('input', calculateDamageDealt);
+    document.getElementById('attack-count').addEventListener('input', updateAttackInputs);
+    updateAttackInputs();
+    // Ẩn kết quả ban đầu
+    document.getElementById('damage-dealt-result').style.display = 'none';
 }
 
 function updateStatBuffDebuffInputs(countInput, type) {
@@ -93,7 +186,7 @@ function createAttackInput(index) {
 function updateBuffDebuffInputs(countInput, type, context) {
     const count = parseInt(countInput.value) || 0;
     const container = countInput.nextElementSibling;
-    container.innerHTML = Array.from({length: count}, (_, i) => createBuffDebuffInput(type, i)).join('');
+    container.innerHTML = Array.from({length: count}, (_, i) => createBuffDebuffInput(type, i, context)).join('');
 
     container.querySelectorAll(`.${type}-input`).forEach(input => {
         input.addEventListener('input', () => context === 'attack' && calculateDamageDealt());
@@ -135,30 +228,14 @@ function calculateStats() {
 
     const finalStat = baseStat * (1 + totalBuff / 100) * totalDebuff;
 
-    document.getElementById('stat-calc-result').innerHTML = `
+    const resultElement = document.getElementById('stat-calc-result');
+    resultElement.innerHTML = `
         <p>Base Stat: ${baseStat}</p>
         <p>Tổng buff: ${buffDetails.length > 0 ? buffDetails.join(' + ') : '0%'} = <span style="color: red;">${totalBuff}%</span></p>
         <p>Tổng debuff: 1 - ${debuffDetails.length > 0 ? debuffDetails.join(' * ') : '100'}% / 100 = <span style="color: red;">${((1 - totalDebuff) * 100).toFixed(2)}%</span></p>
         <p><strong>Stat cuối cùng: ${finalStat.toFixed(2)}</strong></p>
     `;
-}
-
-function calculateBuffDebuff(selector, label, isDebuff = false) {
-    const inputs = document.querySelectorAll(selector);
-    let total = isDebuff ? 1 : 0;
-    const details = [];
-    inputs.forEach((input, index) => {
-        const value = parseFloat(input.value) || 0;
-        if (value !== 0) {
-            if (isDebuff) {
-                total *= (100 - value) / 100;
-            } else {
-                total += value;
-            }
-            details.push(`${label} ${index + 1}: ${value}%`);
-        }
-    });
-    return { total: isDebuff ? total : total, details };
+    resultElement.style.display = document.getElementById('stat-calc').style.display !== 'none' ? 'block' : 'none';
 }
 
 function calculateBuffDebuff(selector, label, isDebuff = false) {
@@ -190,12 +267,14 @@ function calculateDamageDealt() {
         damageDetails.push(details);
     }
 
-    document.getElementById('damage-dealt-result').innerHTML = `
+    const resultElement = document.getElementById('damage-dealt-result');
+    resultElement.innerHTML = `
         <h3>Tóm tắt sát thương:</h3>
         <ul>${attackSummary.map(summary => `<li>${summary}</li>`).join('')}</ul>
         <h3>Chi tiết tính toán:</h3>
         ${damageDetails.join('<hr>')}
     `;
+    resultElement.style.display = document.getElementById('damage-dealt').style.display !== 'none' ? 'block' : 'none';
 }
 
 function calculateSingleAttack(index) {
@@ -222,16 +301,10 @@ function calculateSingleAttack(index) {
     return { damage, effects, details };
 }
 
-function calculateDamageReceived() {
-    const defenderHp = parseFloat(document.getElementById('defender-hp-received').value) || 0;
-    const defenderShielding = parseFloat(document.getElementById('defender-shielding-received').value) || 0;
-    const incomingDamage = parseFloat(document.getElementById('incoming-damage').value) || 0;
-
-    const actualDamage = Math.max(0, incomingDamage - defenderShielding);
-    const remainingHp = Math.max(0, defenderHp - actualDamage);
-
-    document.getElementById('damage-received-result').innerHTML = `
-        <p>Sát thương thực tế nhận vào: ${actualDamage}</p>
-        <p>HP còn lại: ${remainingHp}</p>
-    `;
+function setupDamageReceivedForm() {
+    if (typeof window.initDamageReceivedForm === 'function') {
+        window.initDamageReceivedForm();
+    } else {
+        console.error('initDamageReceivedForm function not found. Make sure damage-received-script.js is loaded correctly.');
+    }
 }

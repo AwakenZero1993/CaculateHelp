@@ -1,8 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    setupDamageReceivedForm();
-});
-
-function setupDamageReceivedForm() {
+function initDamageReceivedForm() {
     const form = document.getElementById('damage-received-form');
     if (!form) return;
 
@@ -11,7 +7,7 @@ function setupDamageReceivedForm() {
         <label for="attacker-damage">Sát thương người tấn công:</label>
         <input type="number" id="attacker-damage" required min="0" placeholder="Nhập sát thương của người tấn công">
         
-        <div>
+        <div class="checkbox-group">
             <label><input type="checkbox" id="effect-cdd"> CDD</label>
             <label><input type="checkbox" id="effect-true-damage"> True Damage</label>
             <label><input type="checkbox" id="effect-piercing"> Piercing Damage</label>
@@ -31,7 +27,7 @@ function setupDamageReceivedForm() {
 
         <h3>Thông tin người nhận sát thương</h3>
         <p>Người nhận sát thương có hiệu ứng:</p>
-        <div>
+<div class="checkbox-group">
             <label><input type="checkbox" id="negate-cdd"> Negate CDD</label>
             <label><input type="checkbox" id="negate-true-damage"> Negate True Damage</label>
             <label><input type="checkbox" id="negate-piercing"> Negate Piercing Damage</label>
@@ -68,19 +64,12 @@ function setupDamageReceivedForm() {
         <div id="damage-reduction-inputs"></div>
 
         <label for="elemental-affinity" id="elemental-affinity-label">Elemental Affinity:</label>
-        <input type="number" id="elemental-affinity" min="1" step="0.01" value="1" placeholder="Nhập hệ số Elemental Affinity (mặc định: 1)">
-
-        <button type="button" onclick="calculateDamageReceived()">Tính toán</button>
+        <input type="number" id="elemental-affinity" step="0.01" value="1" placeholder="Nhập hệ số Elemental Affinity (mặc định: 1)">
     `;
 
     form.addEventListener('input', calculateDamageReceived);
+    form.addEventListener('change', calculateDamageReceived);
 
-    document.getElementById('effect-cdd').addEventListener('change', updateInputStates);
-    document.getElementById('effect-true-damage').addEventListener('change', updateInputStates);
-    document.getElementById('effect-piercing').addEventListener('change', updateInputStates);
-    document.getElementById('negate-cdd').addEventListener('change', updateInputStates);
-    document.getElementById('negate-true-damage').addEventListener('change', updateInputStates);
-    document.getElementById('negate-piercing').addEventListener('change', updateInputStates);
     document.getElementById('own-attack-count').addEventListener('input', updateOwnAttackInputs);
     document.getElementById('shield-terrain-count').addEventListener('input', updateShieldTerrainInputs);
     document.getElementById('damage-reduction-count').addEventListener('input', updateDamageReductionInputs);
@@ -91,7 +80,9 @@ function setupDamageReceivedForm() {
     updateShieldTerrainInputs();
     updateDamageReductionInputs();
     updateElementalAffinityLabel();
+    document.getElementById('calculation-result').style.display = 'none';
 }
+
 
 function updateElementalAffinityLabel() {
     const attackElement = document.getElementById('attack-element').value;
@@ -127,6 +118,7 @@ function updateOwnAttackInputs() {
         `;
     }
     updateInputStates();
+    calculateDamageReceived();
 }
 
 function updateShieldTerrainInputs() {
@@ -148,6 +140,7 @@ function updateShieldTerrainInputs() {
         `;
     }
     updateInputStates();
+    calculateDamageReceived();
 }
 
 function updateDamageReductionInputs() {
@@ -168,6 +161,7 @@ function updateDamageReductionInputs() {
         `;
     }
     updateInputStates();
+    calculateDamageReceived();
 }
 
 function updateInputStates() {
@@ -196,28 +190,24 @@ function updateInputStates() {
         messageElement.textContent = isDisabled ? message : '';
     }
 
-    // Cập nhật cho các trường nhập số lượng
     updateInputAndMessage(ownAttackCount, document.getElementById('own-attack-count-message'), effectivePiercing, 'Đòn tấn công có piercing damage, phần này bị bỏ qua');
     updateInputAndMessage(shieldTerrainCount, document.getElementById('shield-terrain-count-message'), effectivePiercing, 'Đòn tấn công có hiệu ứng Piercing, phần này bị bỏ qua');
     updateInputAndMessage(damageReductionCount, document.getElementById('damage-reduction-count-message'), effectiveTrueDamage, 'Đòn tấn công có hiệu ứng True Damage, phần này bị bỏ qua');
 
-    // Cập nhật cho các input trong phần "Giảm sát thương nhận vào cố định"
     const fixedReductionInputs = [...ownAttackInputs, ...shieldTerrainInputs, reduceDef];
     fixedReductionInputs.forEach(input => {
         const messageElement = document.getElementById(`${input.id}-message`);
         updateInputAndMessage(input, messageElement, effectivePiercing, 'Đòn tấn công có hiệu ứng Piercing, phần này bị bỏ qua');
     });
 
-    // Cập nhật cho các input trong phần "Giảm sát thương nhận vào theo tỉ lệ"
     damageReductionInputs.forEach(input => {
         const messageElement = document.getElementById(`${input.id}-message`);
         updateInputAndMessage(input, messageElement, effectiveTrueDamage, 'Đòn tấn công có hiệu ứng True Damage, phần này bị bỏ qua');
     });
 
-    // Xử lý riêng cho Elemental Affinity
     elementalAffinityInput.disabled = false;
     elementalAffinityInput.style.backgroundColor = '';
-    elementalAffinityInput.min = effectiveTrueDamage ? "1" : "0";
+    elementalAffinityInput.min = effectiveTrueDamage ? "1" : "-999";
     if (effectiveTrueDamage && parseFloat(elementalAffinityInput.value) < 1) {
         elementalAffinityInput.value = "1";
     }
@@ -228,13 +218,9 @@ function calculateDamageReceived() {
     const attackerDamage = parseFloat(document.getElementById('attacker-damage').value) || 0;
     const attackElement = document.getElementById('attack-element').value;
     
-    // Kiểm tra xem người dùng đã chọn hệ của đòn tấn công chưa
-    if (!attackElement) {
-        const resultElement = document.getElementById('damage-received-result');
-        resultElement.innerHTML = `
-            <p style="color: red; font-weight: bold;">Vui lòng chọn hệ của đòn tấn công trước khi tính toán!</p>
-        `;
-        return;  // Dừng tính toán nếu chưa chọn hệ
+    if (attackerDamage === 0 || !attackElement) {
+        updateInputStates();
+        return;
     }
 
     const isCDD = document.getElementById('effect-cdd').checked;
@@ -272,17 +258,15 @@ function calculateDamageReceived() {
         totalShieldTerrainReduction += value;
     });
 
-    // A: Giảm sát thương nhận vào theo tỉ lệ (%)
     const damageReductionInputs = document.querySelectorAll('.damage-reduction-input');
     let A = 1;
     damageReductionInputs.forEach(input => {
         const value = parseFloat(input.value) || 0;
         A *= (1 - value / 100);
     });
-    A = 1 - A;  // A = 1 - (1 - value1%)*(1-value2%)*...*(1-valueN%)
+    A = 1 - A;
     
-    // B: Giảm sát thương nhận vào cố định
-    let B = reduceDef;  // Def không bị CDD bỏ qua
+    let B = reduceDef;
     if (!effectiveCDD || !allOwnAttacksLessThanDamage) {
         B += totalOwnAttackReduction;
     }
@@ -290,11 +274,9 @@ function calculateDamageReceived() {
         B += totalShieldTerrainReduction;
     }
     
-    // C: Elemental Affinity
     let C = parseFloat(document.getElementById('elemental-affinity').value) || 1;
     const elementName = getElementName(attackElement);
 
-    // Tính toán sát thương cuối cùng
     let finalDamage = attackerDamage;
 
     if (!effectiveTrueDamage) {
@@ -305,16 +287,15 @@ function calculateDamageReceived() {
         finalDamage -= B;
     }
 
-    finalDamage = Math.max(0, finalDamage);  // Đảm bảo sát thương không âm
+    finalDamage = Math.max(0, finalDamage);
     finalDamage *= C;
 
     updateInputStates();
     
-    const resultElement = document.getElementById('damage-received-result');
-    resultElement.innerHTML = `
+    let resultHTML = `
         <h3>Kết quả tính sát thương nhận vào:</h3>
         <p>Sát thương ban đầu (Dmg): ${attackerDamage}</p>
-        <p>Hệ của đòn tấn công: <strong>${getElementName(attackElement)}</strong></p>
+        <p>Hệ của đòn tấn công: <strong>${elementName}</strong></p>
         <p>Hiệu ứng: ${effectiveCDD ? 'CDD, ' : ''}${effectiveTrueDamage ? 'True Damage, ' : ''}${effectivePiercing ? 'Piercing, ' : ''}</p>
         <h4>Các thông số:</h4>
         <p>A: Giảm sát thương nhận vào theo tỉ lệ = ${(A * 100).toFixed(2)}% ${effectiveTrueDamage ? '(Không áp dụng do True Damage)' : ''}</p>
@@ -322,9 +303,27 @@ function calculateDamageReceived() {
         <p>C: ${elementName} Affinity = ${C.toFixed(2)}</p>
         <h4>Công thức tính:</h4>
         <p>Final Dmg = (Dmg ${effectiveTrueDamage ? '' : 'x (1-A)'} ${effectivePiercing ? '' : '- B'}) x C</p>
-        <p><strong>Sát thương cuối cùng nhận vào: <span style="color: #FF0000; font-size: 1.2em;">${finalDamage.toFixed(2)}</span></strong></p>
     `;
+
+    if (C >= 0) {
+        resultHTML += `<p><strong>Sát thương cuối cùng nhận vào: <span style="color: #FF0000; font-size: 1.2em;">${finalDamage.toFixed(2)}</span></strong></p>`;
+    } else {
+        const healingAmount = Math.abs(finalDamage);
+        resultHTML += `
+            <p><strong>Nhân vật phục hồi: <span style="color: #00AA00; font-size: 1.2em;">${healingAmount.toFixed(2)} HP</span></strong></p>
+            <p style="color: #0000FF;"><em>Lưu ý: HP phục hồi vẫn tuân theo healing limit mỗi turn.</em></p>
+        `;
+    }
+
+    const resultElement = document.getElementById('calculation-result');
+    if (resultElement) {
+        resultElement.innerHTML = resultHTML;
+        resultElement.style.display = 'block';
+    }
 }
+
+// Đảm bảo rằng hàm có thể được gọi từ bên ngoài
+window.initDamageReceivedForm = initDamageReceivedForm;
 
 function getElementName(element) {
     const elementNames = {
@@ -338,3 +337,5 @@ function getElementName(element) {
     };
     return elementNames[element] || element;
 }
+
+// Không cần định nghĩa hàm toggleSection ở đây vì nó đã được định nghĩa trong damage-script.js
