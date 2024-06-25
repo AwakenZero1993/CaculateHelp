@@ -211,7 +211,7 @@ function updateRemainingAffinity() {
 function checkAffinityValidity() {
     const errorMessage = document.getElementById('affinity-error');
     if (remainingAffinity > 0) {
-        errorMessage.textContent = 'Tổng Affinity không được thấp hơn hoặc bằng 7.';
+        errorMessage.textContent = 'Tổng Affinity không được thấp hơn 7.';
         errorMessage.style.display = 'block';
     } else {
         errorMessage.style.display = 'none';
