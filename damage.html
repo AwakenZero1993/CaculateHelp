@@ -23,17 +23,61 @@
         
         <main class="main-content">
             <div class="section">
-                <h2 class="section-title" aria-controls="stat-calc" aria-expanded="false">
-                    <i class="fas fa-chart-bar"></i> 1. Hỗ trợ tính toán stat
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </h2>
-                <div id="stat-calc" class="section-content" style="display: none;">
-                    <form id="stat-calc-form">
-                        <!-- Nội dung form sẽ được tạo động bởi JavaScript -->
-                    </form>
-                    <div id="stat-calc-result" class="result-box" style="display: none;"></div>
-                </div>
+    <h2 class="section-title" aria-controls="stat-calc" aria-expanded="false">
+        <i class="fas fa-chart-bar"></i> 1. Hỗ trợ tính toán stat
+        <i class="fas fa-chevron-down toggle-icon"></i>
+    </h2>
+    <div id="stat-calc" class="section-content" style="display: none;">
+        <form id="stat-calc-form">
+            <div class="form-group">
+                <label for="base-stat-type">Loại Base stat:</label>
+                <select id="base-stat-type" required>
+                    <option value="">Chọn loại stat</option>
+                    <option value="HP">HP</option>
+                    <option value="POW">POW</option>
+                    <option value="AGI">AGI</option>
+                    <option value="SHD">SHD</option>
+                    <option value="REC">REC</option>
+                    <option value="OTHER">Stat khác</option>
+                </select>
             </div>
+            
+            <div class="form-group">
+                <label for="player-class">Class:</label>
+                <select id="player-class" required>
+                    <option value="">Chọn class</option>
+                    <option value="Attacker">Attacker</option>
+                    <option value="Tanker">Tanker</option>
+                    <option value="Healer">Healer</option>
+                    <option value="Debuffer">Debuffer</option>
+                    <option value="Speedster">Speedster</option>
+                    <option value="Scouter">Scouter</option>
+                    <option value="Supporter">Supporter</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="base-stat">Base Stat:</label>
+                <input type="number" id="base-stat" required placeholder="Nhập chỉ số cơ bản">
+            </div>
+            
+            <div class="form-group">
+                <label for="buff-count">Số lượng buff:</label>
+                <input type="number" id="buff-count" value="0" min="0" placeholder="Số buff">
+            </div>
+            
+            <div id="buff-inputs"></div>
+            
+            <div class="form-group">
+                <label for="debuff-count">Số lượng debuff:</label>
+                <input type="number" id="debuff-count" value="0" min="0" placeholder="Số debuff">
+            </div>
+            
+            <div id="debuff-inputs"></div>
+        </form>
+        <div id="stat-calc-result" class="result-box" style="display: none;"></div>
+    </div>
+</div>
 
             <div class="section">
                 <h2 class="section-title" aria-controls="damage-dealt" aria-expanded="false">

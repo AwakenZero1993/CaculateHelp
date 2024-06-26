@@ -3,6 +3,11 @@ function initDamageReceivedForm() {
     if (!form) return;
 
     form.innerHTML = `
+        <div class="form-header">
+            <h3>Tính toán sát thương nhận vào</h3>
+            <button type="button" id="damage-received-help" class="help-button">Help</button>
+        </div>
+
         <h3>Thông tin người tấn công</h3>
         <label for="attacker-damage">Sát thương người tấn công:</label>
         <input type="number" id="attacker-damage" required min="0" placeholder="Nhập sát thương của người tấn công">
@@ -27,7 +32,7 @@ function initDamageReceivedForm() {
 
         <h3>Thông tin người nhận sát thương</h3>
         <p>Người nhận sát thương có hiệu ứng:</p>
-<div class="checkbox-group">
+        <div class="checkbox-group">
             <label><input type="checkbox" id="negate-cdd"> Negate CDD</label>
             <label><input type="checkbox" id="negate-true-damage"> Negate True Damage</label>
             <label><input type="checkbox" id="negate-piercing"> Negate Piercing Damage</label>
@@ -74,6 +79,7 @@ function initDamageReceivedForm() {
     document.getElementById('shield-terrain-count').addEventListener('input', updateShieldTerrainInputs);
     document.getElementById('damage-reduction-count').addEventListener('input', updateDamageReductionInputs);
     document.getElementById('attack-element').addEventListener('change', updateElementalAffinityLabel);
+    document.getElementById('damage-received-help').addEventListener('click', showDamageReceivedHelp);
 
     updateInputStates();
     updateOwnAttackInputs();
@@ -83,6 +89,47 @@ function initDamageReceivedForm() {
     document.getElementById('calculation-result').style.display = 'none';
 }
 
+function showDamageReceivedHelp() {
+    const helpContent = `
+        <h4 style="color: #e74c3c;">Thông tin người tấn công:</h4>
+        <p><strong style="color: #2980b9;">Sát thương người tấn công:</strong><br>
+        <span style="color: #34495e;">- Nhập giá trị sát thương gốc của người tấn công, trước khi áp dụng bất kỳ hiệu ứng nào.</span></p>
+
+        <p><strong style="color: #2980b9;">Hiệu ứng đòn tấn công:</strong><br>
+        <span style="color: #34495e;">
+        - CDD: Sát thương duy trì, có thể bỏ qua một số phòng thủ.<br>
+        - True Damage: Sát thương thật, bỏ qua hiệu ứng giảm sát thương theo tỉ lệ và không chịu giảm sát thương do tương thích nguyên tố (Elemental Affinity).<br>
+        - Piercing Damage: Sát thương xuyên giáp, bỏ qua hiệu ứng chặn sát thương theo lượng cố định.
+        </span></p>
+
+        <p><strong style="color: #2980b9;">Hệ của đòn tấn công:</strong><br>
+        <span style="color: #34495e; padding-left: 15px;">Chọn hệ tương ứng của đòn tấn công. Điều này ảnh hưởng đến Elemental Affinity.</span></p><br>
+
+        <h4 style="color: #e74c3c;">Thông tin người nhận sát thương:</h4>
+        <p><strong style="color: #2980b9;">Hiệu ứng phòng thủ:</strong><br>
+        <span style="color: #34495e;">
+        - Negate CDD: Vô hiệu hóa hiệu ứng CDD.<br>
+        - Negate True Damage: Vô hiệu hóa sát thương thật.<br>
+        - Negate Piercing: Vô hiệu hóa sát thương xuyên giáp.
+        </span></p><br>
+
+        <p><strong style="color: #2980b9;">Giảm sát thương nhận vào cố định:</strong><br>
+        <span style="color: #34495e;">
+        - Đòn tấn công của bản thân: Trong trường hợp nhân vật sử dụng đòn tấn công của bản thân để làm suy yếu đòn tấn công của kẻ địch.<br>
+        - Vật cản: Bao gồm độ bền của khiên, fake HP, và địa hình tham gia vào việc đỡ đòn.<br>
+        - Def: Chỉ số phòng thủ cố định của bản thân.
+        </span></p> <br>
+
+        <p><strong style="color: #2980b9;">Giảm sát thương nhận vào theo tỉ lệ:</strong><br>
+        <span style="color: #34495e; padding-left: 15px;">Nhập số lượng và giá trị phần trăm của các hiệu ứng giảm sát thương theo tỉ lệ. Ví dụ: 20% giảm sát thương.</span></p>
+
+        <p><strong style="color: #2980b9;">Elemental Affinity:</strong><br>
+        <span style="color: #34495e; padding-left: 15px;">Hệ số này phản ánh khả năng kháng hoặc yếu điểm của bạn đối với hệ của đòn tấn công. Giá trị dưới 1 là kháng, trên 1 là yếu điểm, âm là hấp thụ.</span></p><br>
+
+        <p style="background-color: #f39c12; color: #ffffff; padding: 10px; border-radius: 5px; font-weight: bold;">Hệ thống sẽ tự động tính toán sát thương cuối cùng nhận vào dựa trên các thông tin bạn nhập, có tính đến tất cả các hiệu ứng tấn công và phòng thủ.</p>
+    `;
+    showModal('Hướng dẫn tính toán sát thương nhận vào', helpContent);
+}
 
 function updateElementalAffinityLabel() {
     const attackElement = document.getElementById('attack-element').value;
@@ -337,5 +384,3 @@ function getElementName(element) {
     };
     return elementNames[element] || element;
 }
-
-// Không cần định nghĩa hàm toggleSection ở đây vì nó đã được định nghĩa trong damage-script.js
