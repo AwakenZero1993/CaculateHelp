@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Mở rộng phần "Xây dựng chỉ số" mặc định
-    toggleSection('stat-builder');
+    //toggleSection('stat-builder');
 });
 
 function setupNevaSkillBuilder() {
