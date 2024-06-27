@@ -1,0 +1,96 @@
+.section {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.section-title {
+    background-color: #f5f5f5;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start; /* Thay đổi từ space-between sang flex-start */
+    align-items: center;
+    font-weight: bold;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    margin-right: 10px; /* Thêm khoảng cách giữa icon và text */
+}
+
+.section-content {
+    padding: 15px;
+}
+
+.error {
+    border: 1px solid #ff0000;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
+
+.skill-entry {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.skill-entry h4 {
+  margin-top: 0;
+}
+
+#add-skill {
+  margin-bottom: 15px;
+}
+
+#copy-neva-skills {
+  margin-top: 15px;
+}
+
+.skill-entry {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.skill-entry h4 {
+  margin-top: 0;
+}
+
+.skill-cost input {
+  width: 50px;
+  margin-right: 10px;
+}
+
+#add-skill {
+  margin-bottom: 15px;
+}
+
+#copy-neva-skills {
+  margin-top: 15px;
+}
+
+#total-skill-cost {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#total-skill-cost span {
+  color: #4CAF50;
+}
+
+input:required, select:required, textarea:required {
+    border-color: #2196F3;
+}
+
+input:required:invalid, select:required:invalid, textarea:required:invalid {
+    border-color: #f44336;
+}
